@@ -1,0 +1,101 @@
+{
+  "title" : "ETL Database",
+  "description" : "Configuration for an PHP-ETL Database",
+  "type" : "object",
+  "properties" : {
+    "config": {
+      "title": "Database Type",
+      "type" : "object",
+      "required": true,
+      "defaultProperties" : ["driver", "host", "port", "database", "username", "password"],
+      "properties": {
+         "driver" : {
+            "title": "Driver",
+            "type": "string",
+            "enum": ["mysql", "pgsql", "sqlsrv", "sqlite"],
+            "required": true,
+            "options": {
+               "enum_titles" : ["MySQL", "Postgres", "MS SQL", "SQLite"]
+            }
+         },
+          "host" : {
+             "title": "Host",
+             "type": "string",
+             "default": "localhost",
+             "options": {
+                "dependencies": {
+                   "driver": ["mysql", "pgsql", "sqlsrv"]
+                }
+              }
+          },
+          "port": {
+             "title": "Port",
+             "type": "integer",
+             "options": {
+                "dependencies": {
+                   "driver": ["mysql", "pgsql", "sqlsrv"]
+                }
+              }
+          },
+          "database": {
+             "title": "Database",
+             "type": "string",
+             "required": true
+          },
+          "username": {
+             "type": "string",
+             "title": "Username",
+             "options": {
+                "dependencies": {
+                   "driver": ["mysql", "pgsql", "sqlsrv"]
+                }
+              }
+          },
+          "password":{
+             "title": "Password",
+             "type": "string",
+             "format" : "password",
+             "options": {
+                "dependencies": {
+                   "driver": ["mysql", "pgsql", "sqlsrv"]
+                }
+              }
+          },
+          "charset": {
+             "title": "Character Set",
+             "type": "string",
+             "default": "utf8",
+             "required": false,
+             "options": {
+                "dependencies": {
+                   "driver": ["mysql", "pgsql"]
+                }
+              }
+         },
+          "schema": {
+             "title": "Schema",
+             "type": "string",
+             "default": "public",
+             "required": false,
+             "options": {
+                "dependencies": {
+                   "driver": "pgsql"
+                }
+              }
+          },
+          "collation": {
+            "title": "Collation",
+            "type": "string",
+            "default": "utf8_unicode_ci",
+            "required": false,
+             "options": {
+                "dependencies": {
+                   "driver": "mysql"
+                }
+              }
+          }
+
+       }
+    }
+  }
+}

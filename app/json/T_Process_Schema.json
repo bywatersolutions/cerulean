@@ -1,0 +1,517 @@
+{
+  "title": "Transform Process",
+  "type": "object",
+  "required": [
+    "Transformers"
+  ],
+  "properties": {
+    "Transformers": {
+      "type": "array",
+      "description": "ordered list of transformations to apply to records",
+      "items": {
+        "type": "object",
+        "title": "Transformer",
+        "oneOf": [
+          {
+            "$ref": "#/definitions/dateTransformer"
+          },
+          {
+            "$ref": "#/definitions/mathTransformer"
+          },
+          {
+            "$ref": "#/definitions/trimTransformer"
+          },
+          {
+            "$ref": "#/definitions/uniqueRowsTransformer"
+          },
+          {
+            "$ref": "#/definitions/regexTransformer"
+          },
+          {
+            "$ref": "#/definitions/autoincrementTransformer"
+          },
+          {
+            "$ref": "#/definitions/mapTransformer"
+          }
+        ]
+      }
+    },
+    "limit": {
+      "title": "Limit",
+      "type": "integer",
+      "default": 10,
+      "required": false
+    },
+    "skip": {
+      "title" : "Skip",
+      "type": "integer",
+      "description": "Rows to skip",
+      "default": 1,
+      "required": false
+    }
+  },
+  "definitions": {
+    "csvExtractor" : {
+      "title" : "CSV Extractor",
+      "description": "Extracts data from a character-separated values file",
+      "type": "object",
+      "required" : ["source", "columns"],
+      "properties": {
+         "source" : {
+            "$ref": "#/definitions/sourceFiles"
+         },
+         "columns": {
+           "title": "Columns to Extract",
+           "description": "If your file has headers, the key value is the header from the file, and the value is what column it will map to after extraction.  If there are no headers, the key is the column post-extraction, and the value is a numeric reference to which column",
+           "$ref": "#/definitions/keyedColumns"
+         },
+         "delimiter" : {
+            "type": "string",
+            "title": "Delimiter",
+            "default": ",",
+            "maxLength": 1
+         },
+         "enclosure" : {
+            "type": "string",
+            "title": "Enclosure",
+            "description": "Character that wraps field values",
+            "default": "\"",
+            "maxLength": 1
+         }
+      }
+    },
+    "fixedWidthExtractor" : {
+      "title": "Fixed Width Extractor",
+      "description": "Extracts data from a fixed-width file",
+      "type": "object",
+      "properties": {
+         "source" : {
+            "$ref": "#/definitions/sourceFiles",
+            "required": true
+         },
+         "columns": {
+           "title": "Columns to Extract",
+           "description" : "Column is the column name post-extraction; Start indicates at which position the information starts (0 indexed); Length is how many characters the information uses",
+           "required": true,
+           "type": "array",
+           "format": "table",
+           "items": {
+             "type": "object",
+             "properties": {
+               "key": {
+                 "title": "Column",
+                 "type": "string",
+                 "required": true
+               },
+               "startValue": {
+                 "title": "Start",
+                 "type": "integer",
+                 "required": true
+               },
+               "length": {
+                 "title": "Length",
+                 "type": "integer",
+                 "required": true
+               }
+             }
+           }
+         }
+      }
+    },
+    "jsonExtractor" : {
+      "title": "JSON Extractor",
+      "description": "Extracts data from a JSON file",
+      "type": "object",
+      "properties": {
+         "source" : {
+            "$ref": "#/definitions/sourceFiles",
+            "required": true
+         },
+         "columns": {
+           "title": "Columns to Extract",
+           "description" : "Key is the column name post-extraction; Value is a valid JSONPath expression to the extracted data.  BEWARE: multiple wildcards [*] can lead to weird, mismatched data!",
+           "required": true,
+           "$ref": "#/definitions/keyedColumns"
+         }
+      }
+    },
+    "queryExtractor" : {
+       "title": "Query Extractor",
+       "description" : "Run an SQL Query against a database",
+       "type": "object",
+       "properties" : {
+          "query" : {
+              "type": "string",
+              "title" : "SQL Query",
+              "required": true
+          },
+          "connection" : {
+              "$ref" : "#/definitions/databases",
+              "title": "Database to Use",
+              "required": true
+          }
+       }
+    },
+    "tableExtractor" : {
+        "title": "Table Extractor",
+        "description" : "Extract an entire database table",
+        "type": "object",
+        "properties" : {
+            "table": {
+                "type": "string",
+                "title": "Database Table",
+                "required": true
+            },
+            "connection" : {
+              "$ref" : "#/definitions/databases",
+              "title": "Database to Use",
+              "required": true
+            },
+            "columns" : {
+                "title" : "Columns to Extract",
+                "$ref" : "#/definitions/simpleColumns"
+            }
+        }
+    },
+    "simpleXMLExtractor" : {
+      "title": "SimpleXML Extractor",
+      "description": "Extracts data from an XML file using XPath",
+      "type": "object",
+      "properties": {
+         "source" : {
+            "$ref": "#/definitions/sourceFiles",
+            "required": true
+         },
+         "loop" : {
+             "title" : "Loop Path",
+             "description" : "The path to loop through",
+             "type": "string",
+             "required": true,
+             "default": "/"
+         },
+         "separator" : {
+             "title" : "Separator",
+             "description" : "Pattern to use to separate multiple returned values for a field",
+             "type": "string",
+             "required": true,
+             "default": " | "
+         },
+         "columns": {
+           "title": "Columns to Extract",
+           "description" : "Key is the column name post-extraction; Value is valid XPath to the desired element.  Note that parent values (outside the looped element) CAN be referenced!",
+           "required": true,
+           "$ref": "#/definitions/keyedColumns"
+         }
+      }
+    },
+    "xmlExtractor" : {
+      "title": "XML Extractor",
+      "description": "Extracts data from an XML file.  Not as robust as SimpleXML Extractor; use that instead",
+      "type": "object",
+      "properties": {
+         "source" : {
+	    "$ref" : "#/definitions/sourceFiles",
+            "required": true
+         },
+         "loop" : {
+             "title" : "Loop Path",
+             "description" : "The path to loop through",
+             "type": "string",
+             "required": true,
+             "default": "/"
+         },
+         "columns": {
+           "title": "Columns to Extract",
+           "description" : "Key is the column name post-extraction; Value is the path (without the loop path) of the value. Use @ to select attributes",
+           "required": true,
+           "$ref": "#/definitions/keyedColumns"
+         }
+      }
+    },
+    "dateTransformer": {
+      "title": "Date Transformer",
+      "description": "Transform date fields from one format to another",
+      "type": "object",
+      "properties": {
+        "columns": {
+          "title": "Columns to Transform",
+          "$ref": "#/definitions/fieldHeaders"
+        },
+        "inputFormat": {
+          "type": "string",
+          "title": "Input Format",
+          "required": true
+        },
+        "outputFormat": {
+          "type": "string",
+          "title": "Output Format",
+          "required": true,
+          "default": "Y-m-d"
+        }
+      }
+    },
+    "mathTransformer": {
+      "title": "Math Transformer",
+      "description": "Perform math operations on fields",
+      "type": "object",
+      "properties": {
+        "columns": {
+          "title": "Columns to Transform",
+          "$ref": "#/definitions/fieldHeaders"
+        },
+        "expression": {
+          "type": "string",
+          "title": "Mathematical Expression",
+          "description": "X represents current field value",
+          "required": true
+        }
+      }
+    },
+    "trimTransformer": {
+      "title": "Trim Transformer",
+      "description": "Remove leading/trailing whitespace from a field",
+      "type": "object",
+      "properties": {
+        "columns": {
+          "title": "Columns to Transform",
+          "$ref": "#/definitions/fieldHeaders"
+        },
+        "type" : {
+          "type": "string",
+          "title": "Type of Trim",
+          "description": "Which end of the value to trim",
+          "required" : true,
+          "default" : "both",
+          "enum" : ["right", "left", "both"]
+        },
+        "mask": {
+          "type": "string",
+          "title": "Mask",
+          "description": "The stripped characters. Simply list all characters that you want to be stripped. With .. you can specify a range of characters.",
+          "required": false
+        }
+      }
+     },
+    "uniqueRowsTransformer": {
+      "title": "Unique Rows Transformer",
+      "description": "Filter for unique rows",
+      "type": "object",
+      "properties": {
+        "columns": {
+          "title": "Columns to check for uniqueness",
+          "$ref": "#/definitions/fieldHeaders"
+        },
+        "consecutive": {
+          "type": "boolean",
+          "title": "Consecutive Rows only?",
+          "default": false,
+          "format": "checkbox"
+        }
+      }
+    },
+    "regexTransformer": {
+      "title": "Regex Transformer",
+      "description": "Perform a regex search/replace on a field",
+      "type": "object",
+      "properties": {
+        "columns": {
+          "title": "Columns to Transform",
+          "$ref": "#/definitions/fieldHeaders"
+        },
+        "pattern" : {
+          "type": "string",
+          "title": "Pattern to match",
+          "description": "do placeholders work?  Great question!",
+          "required" : true
+        },
+        "replacement": {
+          "type": "string",
+          "title": "Replacement value",
+          "description": "Value to replace the matched pattern with",
+          "required": true
+        }
+      }
+    },
+    "autoincrementTransformer": {
+      "title": "Auto-Increment Transformer",
+      "description": "Set an auto-incrementing value to the row",
+      "type": "object",
+      "properties": {
+        "columns": {
+          "title": "Columns to set to autoincrement",
+          "$ref": "#/definitions/fieldHeaders"
+        },
+        "start": {
+          "type": "integer",
+          "title": "Starting Value",
+          "default": 1
+        }
+      }
+    },
+    "mapTransformer": {
+      "title": "Map Transformer",
+      "description": "Map values to new values based on a provided mapping",
+      "type": "object",
+      "properties": {
+        "columns": {
+          "title": "Columns to map",
+          "$ref": "#/definitions/fieldHeaders"
+        },
+        "map": {
+          "type": "string",
+          "title": "Map to use",
+          "require": true,
+          "enum": ["bibliomap", "itemtypemap", "branchcodemap"],
+	  "options" : {
+             "enum_titles" : ["Biblio Map", "Item Type Map", "Branchcode Map"]
+          }
+        }
+      }
+    },
+    "insertLoader": {
+        "title": "Insert Loader",
+        "description" : "Inserts data into a database table",
+        "type" : "object",
+        "properties" : {
+           "destination" : {
+              "type" : "string",
+              "title" : "Database Table to load into",
+              "required": true
+           },
+           "connection" : {
+              "$ref" : "#/definitions/databases",
+              "title": "Database to Use",
+              "required": true
+           },
+           "columns": {
+             "title": "Columns to load",
+             "$ref": "#/definitions/fieldHeaders",
+             "required": true
+           },
+           "commitSize": {
+              "title" : "Number of records to group in a transaction",
+              "type": "integer",
+              "default" : 100
+           }
+        }
+    },
+    "insertUpdateLoader": {
+        "title": "Insert/Update Loader",
+        "description" : "Inserts or updates data into a database table, based on provided key column(s)",
+        "type" : "object",
+        "properties" : {
+           "destination" : {
+              "type" : "string",
+              "title" : "Database Table to load into",
+              "required": true
+           },
+           "connection" : {
+              "$ref" : "#/definitions/databases",
+              "title": "Database to Use",
+              "required": true
+           },
+           "keys": {
+              "title" : "Primary Key Field(s)",
+              "description" : "Multiple columns can be specified if primary key is multi-valued",
+              "$ref" : "#/definitions/fieldHeaders"
+           },
+           "columns": {
+             "title": "Columns to load",
+             "$ref": "#/definitions/fieldHeaders",
+	     "required": true
+           },
+           "commitSize": {
+              "title" : "Number of records to group in a transaction",
+              "type": "integer",
+              "default" : 100
+           }
+        }
+    },
+    "fileLoader": {
+        "title": "File Loader",
+        "description" : "Save data to a file",
+        "type" : "object",
+        "properties" : {
+           "destination" : {
+              "type" : "string",
+              "title" : "Filename",
+              "required": true
+           },
+           "format" : {
+              "type": "string",
+              "title": "File format",
+              "required": true,
+              "default" : "csv",
+              "enum" : ["csv", "json", "yaml"]
+           },
+           "columns": {
+             "title": "Columns to load",
+             "$ref": "#/definitions/fieldHeaders",
+             "required": true
+           },
+           "mode": {
+              "title" : "Write mode",
+              "type": "string",
+              "default" : "w",
+              "enum" : ["w", "a"],
+              "options" : {
+                 "enum_titles" : ["overwrite", "append"]
+              }
+           }
+        }
+    },
+    "simpleColumns": {
+      "type": "array",
+      "format": "table",
+      "items": {
+        "type": "string"
+      }
+    },
+    "keyedColumns": {
+      "type": "array",
+      "format": "table",
+      "items": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "title": "Key",
+            "type": "string",
+            "required": true
+          },
+          "value": {
+            "title" : "Value",
+            "type": "string",
+            "required": true
+          }
+        }
+      }
+    },
+    "sourceFiles" : {
+       "title": "Source File",
+       "type": "string",
+       "enum" : ["file1.txt"],
+       "options": {
+          "enum_titles": ["File 1"]
+       }
+    },
+    "databases" : {
+       "type": "string",
+       "title": "Database Connection",
+       "enum": ["default", "migrate", "production"],
+       "options": {
+          "enum_titles": ["Default (Cerulean)", "Migrate", "Production"]
+       }
+    },
+    "fieldHeaders" : {
+        "title": "Field Headers",
+        "type": "array",
+        "uniqueItems": true,
+        "items": {
+            "type": "string",
+            "enum": ["id"]
+        }
+    }
+
+  }
+}
+

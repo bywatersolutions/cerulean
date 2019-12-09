@@ -1,0 +1,16 @@
+---
+Name: cerulean
+---
+SilverStripe\Core\Manifest\ModuleManifest:
+  project: app
+SilverStripe\AssetAdmin\Controller\AssetAdmin:
+  menu_priority: 4
+ETL_Process_Admin:
+  menu_icon: 'app/images/pokeball.png'
+Silverstripe\Assets\File
+  allowed_file_extensions:
+    - ldif
+    - sql
+    - mrc
+    - mrk
+    - data
