@@ -7,7 +7,7 @@ SilverStripe\AssetAdmin\Controller\AssetAdmin:
   menu_priority: 4
 ETL_Process_Admin:
   menu_icon: 'app/images/pokeball.png'
-Silverstripe\Assets\File
+Silverstripe\Assets\File:
   allowed_file_extensions:
     - ldif
     - sql
