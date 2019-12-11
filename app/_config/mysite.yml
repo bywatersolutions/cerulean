@@ -14,3 +14,6 @@ Silverstripe\Assets\File:
     - mrc
     - mrk
     - data
+SilverStripe\PostgreSQL\PostgreSQLDatabase:
+  allow_query_master_postgres: false
+
