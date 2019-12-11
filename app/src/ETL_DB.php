@@ -1,7 +1,7 @@
 <?php
 
 use SilverStripe\ORM\DataObject;
-use ByWaterSolutions\JsonField\JsonField;
+use ByWaterSolutions\JsonEditorField\JsonEditorField;
 
 class ETL_DB extends DataObject {
 
@@ -23,9 +23,9 @@ class ETL_DB extends DataObject {
 	public function getCMSFields() {
 		$fields = parent::getCMSFields();
 
-		$schema = file_get_contents("app/json/ETL_DB_Schema.json");
+		$schema = file_get_contents($_SERVER['DOCUMENT_ROOT']. "app/json/ETL_DB_Schema.json");
 
-		$fields->addFieldToTab("Root.Main", new JsonField("Configuration", "Configuration", $this->Configuration, null, $schema));
+		$fields->addFieldToTab("Root.Main", new JsonEditorField("Configuration", "Configuration", $this->Configuration, null, $schema));
 
 		return $fields;
 	}

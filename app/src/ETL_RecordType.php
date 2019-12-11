@@ -7,9 +7,7 @@ use SilverStripe\Forms\GridField\GridFieldConfig_Base;
 use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
 use SilverStripe\Forms\Gridfield\GridFieldAddExistingAutocompleter;
 
-use Unclecheese\BetterButtons\Actions\BetterButtonLink;
 use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
-use ByWaterSolutions\JsonField\JsonField;
 
 class ETL_RecordType extends DataObject {
 
@@ -30,15 +28,7 @@ class ETL_RecordType extends DataObject {
 		'Records' => ETL_Record::class,
 		'Processes' => ETL_Process::class
 	];
-/**
-	private static $many_many = [
-		'ETLProcesses' => [
-			'through' => ETL_RecordType_Config::class,
-			'from' => 'ETL_RecordType',
-			'to' => 'ETL_Process'
-		]
-	];
-**/
+
 	private static $summary_fields = [
 		'Title' => 'Record Type',
 		'Records.Count' => 'Count'
@@ -79,82 +69,3 @@ class ETL_RecordType extends DataObject {
 	}
 
 }
-
-
-/**
-class ETL_RecordType_Config extends DataObject {
-
-	private static $db = [
-		'Sort' => 'Int',
-		'Configuration' => 'Text'
-	];
-
-	private static $has_one = [
-		'ETL_RecordType' => ETL_RecordType::class,
-		'ETL_Process' => ETL_Process::class
-	];
-
-	private static $default_sort = '"ETL_RecordType_Config"."Sort" ASC';
-
-	public function getCMSFields() {
-		$fields = parent::getCMSFields();
-		$field->addFieldToTab('Root.Main', new HeaderField("Foo", "Foo"));
-		return $fields;
-	}
-}
-
-class ETL_Process_Instance extends DataObject {
-
-        private static $singular_name = "ETL Process";
-
-        private static $plural_name = "ETL Processes";
-
-	private static $db = [
-		'Sort' => 'Int',
-		'Configuration' => 'Text'
-	];
-
-	private static $has_one = [
-		'ETL_RecordType' => ETL_RecordType::class,
-		'ETL_Process' => ETL_Process::class
-	];
-
-	private static $searchable_fields = [
-                'Title',
-                'Description'
-	];
-
-        private static $summary_fields = [
-                'IconThumbnail' => 'Icon',
-                'Title' => 'Name',
-                'Description' => 'Description'
-        ];
-
-        public function getCMSFields() {
-                $fields = parent::getCMSFields();
-
-		$fields->removeByName('Sort');
-		$fields->removeByName('ETL_RecordType');
-		$fields->removeByName('Configuration');
-
-		if ($this->ETL_ProcessID) {
-			$starting_val = $this->Configuration ? $this->Configuration : $this->ETL_Process()->Configuration;
-        	        $schema = file_get_contents($this->ETL_Process()->config()->get('schema'));
-                	$fields->addFieldToTab('Root.Main', new JsonField('Configuration', 'Configuration', $starting_val, null, $schema));
-		}
-                return $fields;
-        }
-
-	public function getIconThumbnail() {
-		return $this->ETL_Process()->getIconThumbnail();
-	}
-
-	public function getTitle() {
-		return $this->ETL_Process()->Title;
-	}
-
-	public function getDescription() {
-		return $this->ETL_Process()->Description;
-	}
-}
-**/

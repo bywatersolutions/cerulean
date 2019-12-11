@@ -6,7 +6,7 @@ use SilverStripe\Assets\Image;
 
 use SilverShop\HasOneField\HasOneButtonField;
 
-use ByWaterSolutions\JsonField\JsonField;
+use ByWaterSolutions\JsonEditorField\JsonEditorField;
 
 class ETL_Process extends DataObject {
 
@@ -27,11 +27,7 @@ class ETL_Process extends DataObject {
 		'Icon' => Image::class,
 		'RecordType' => ETL_RecordType::class
 	];
-/**
-	private static $belongs_many_many = [
-		'RecordTypes' => ETL_RecordType::class . '.ETLProcesses'
-	];
-**/
+
 	private static $summary_fields = [
 		'IconThumbnail' => 'Icon',
 		'Title' => 'Name',
@@ -54,7 +50,7 @@ class ETL_Process extends DataObject {
 
 		$schema = file_get_contents($this->config()->get('schema'));
 		$schema = $this->enumSchema($schema);
-		$jsonfield = JsonField::create('Configuration', 'Configuration', $this->Configuration, null, $schema);
+		$jsonfield = JsonEditorField::create('Configuration', 'Configuration', $this->Configuration, null, $schema);
 
 		$fields->addFieldToTab('Root.Main',
 			$jsonfield
@@ -75,16 +71,15 @@ class ETL_Process extends DataObject {
 		}
 
 		// Enumerate Files
-		$files = File::get()->map('Title', 'Filename')->toArray();
-		if ($files) {
-			$file_titles = array_keys($files);
-			$file_paths = [];
-			foreach (array_values($files) as $file_path) {
-				$file_paths[] = "/var/www/assets/" . $file_path;
-			}
-			$schema_array->{'definitions'}->{'sourceFiles'}->{'enum'} = $file_paths;
-			$schema_array->{'definitions'}->{'sourceFiles'}->{'options'}->{'enum_titles'} = $file_titles;
+		$files = File::get();
+		$file_titles = [];
+		$file_paths = [];
+		foreach($files as $file) {
+			$file_titles[] = $file->Title;
+			$file_paths[] = $file->getAbsoluteURL();
 		}
+		$schema_array->{'definitions'}->{'sourceFiles'}->{'enum'} = $file_paths;
+		$schema_array->{'definitions'}->{'sourceFiles'}->{'options'}->{'enum_titles'} = $file_titles;
 
 		// Enumerate DB Connections
 		$dbs = ETL_DB::get()->map('Title', 'Shortname')->toArray();

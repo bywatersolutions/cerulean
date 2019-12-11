@@ -23,7 +23,6 @@ class Extract_Admin extends ModelAdmin {
 
 	public function init() {
 		parent::init();
-		Requirements::javascript("app/javascript/ws.js");
 	}
 
 	public function getEditForm($id = null, $fields = null) {
@@ -79,7 +78,6 @@ class Load_Admin extends ModelAdmin {
 
 	public function init() {
 		parent::init();
-		Requirements::javascript("app/javascript/ws.js");
 	}
 
 	public function getEditForm($id = null, $fields = null) {
@@ -91,34 +89,6 @@ class Load_Admin extends ModelAdmin {
 
 }
 
-/**
-class RecordType_Admin extends ModelAdmin {
-
-    private static $managed_models = [
-        'ETL_RecordType', 'Record'
-    ];
-
-    private static $url_segment = 'migration';
-
-    private static $menu_title = 'Migration';
-
-    private static $menu_priority = 3;
-
-}
-
-class ETL_Process_Admin extends ModelAdmin {
-
-    private static $managed_models = [
-        'ETL_Process'
-    ];
-
-    private static $url_segment = 'etl_processes';
-
-    private static $menu_title = 'Toolkit';
-
-    private static $menu_priority = 2;
-}
-**/
 class ETL_DB_Admin extends ModelAdmin {
 
     private static $managed_models = [
@@ -131,28 +101,7 @@ class ETL_DB_Admin extends ModelAdmin {
 
     private static $menu_priority = 1;
 }
-/**
-class RecordType_GridFieldDetailForm_ItemRequest extends GridFieldDetailForm_ItemRequest{
-	private static $allowed_actions = array("ItemEditForm");
 
-	function ItemEditForm() {
-		$form = parent::ItemEditForm();
-		$formActions = $form->Actions();
-
-		$button = FormAction::create('run_processes');
-		$button->setTitle('Run Processes');
-		$button->addExtraClass('ss-ui-action-constructive');
-		$formActions->push($button);
-
-		$form->setActions($formActions);
-		return $form;
-	}
-
-	public function run_processes() {
-		return null;
-	}
-}
-**/
 class GridFieldRunProcessAction implements GridField_ColumnProvider, GridField_ActionProvider 
 {
 
