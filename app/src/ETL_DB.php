@@ -23,7 +23,7 @@ class ETL_DB extends DataObject {
 	public function getCMSFields() {
 		$fields = parent::getCMSFields();
 
-		$schema = file_get_contents($_SERVER['DOCUMENT_ROOT']. "app/json/ETL_DB_Schema.json");
+		$schema = file_get_contents($_SERVER['DOCUMENT_ROOT']. "/app/json/ETL_DB_Schema.json");
 
 		$fields->addFieldToTab("Root.Main", new JsonEditorField("Configuration", "Configuration", $this->Configuration, null, $schema));
 
