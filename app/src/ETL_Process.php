@@ -14,7 +14,7 @@ class ETL_Process extends DataObject {
 
 	private static $plural_name = "ETL Processes";
 
-	private static $schema = "app/json/ETL_Process_Schema_v5.json";
+	private static $schema = "/app/json/ETL_Process_Schema_v5.json";
 
 	private static $db = [
 		'Title' => 'Varchar(128)',
@@ -48,7 +48,7 @@ class ETL_Process extends DataObject {
 			HasOneButtonField::create($this, "RecordType")
 		);
 
-		$schema = file_get_contents($this->config()->get('schema'));
+		$schema = file_get_contents($_SERVER['DOCUMENT_ROOT'] . $this->config()->get('schema'));
 		$schema = $this->enumSchema($schema);
 		$jsonfield = JsonEditorField::create('Configuration', 'Configuration', $this->Configuration, null, $schema);
 
