@@ -16,6 +16,8 @@ class ETL_Process extends DataObject {
 
 	private static $schema = "/app/json/ETL_Process_Schema_v5.json";
 
+	private static $file_source_folder = "Source Files";
+
 	private static $db = [
 		'Title' => 'Varchar(128)',
 		'Description' => 'Text',
@@ -71,14 +73,13 @@ class ETL_Process extends DataObject {
 		}
 
 		// Enumerate Files
-		$files = File::get();
-		$file_titles = [];
-		$file_paths = [];
-		foreach($files as $file) {
-			$file_titles[] = $file->Title;
-			$file_paths[] = $file->getAbsoluteURL();
-		}
-		$schema_array->{'definitions'}->{'sourceFiles'}->{'enum'} = $file_paths;
+		$source_folder = File::get()->filter(array('Title' => $this->config()->get('file_source_folder')))->first();
+		$files = $source_folder->mychildren()->map('ID', 'Title')->toArray();
+		$file_titles = array_values($files);
+		$file_ids= array_keys($files);
+
+		// enumerating File IDs; will be processed by RunETLProcesses task
+		$schema_array->{'definitions'}->{'sourceFiles'}->{'enum'} = $file_ids;
 		$schema_array->{'definitions'}->{'sourceFiles'}->{'options'}->{'enum_titles'} = $file_titles;
 
 		// Enumerate DB Connections

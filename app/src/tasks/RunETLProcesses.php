@@ -50,7 +50,10 @@ class RunETLProcesses extends BuildTask {
 	$etl = new Etl($container);
 
 	$vars = $request->getVars();
-	$process = ETL_Process::get_by_id($vars['process']);
+	$process = 0;
+	if (isset($vars['process']) and is_numeric($vars['process'])) {
+		$process = ETL_Process::get_by_id($vars['process']);
+	}
 
 	if ($process) {
 		echo "<h2>".$process->Title."</h2>";
@@ -62,11 +65,21 @@ class RunETLProcesses extends BuildTask {
 		// Set up Extractor, or use local Cerulean Record store
 		if (isset($config['Extractor'])) {
 			$extractor = array_keys($config['Extractor'])[0];
-			$source = $config['Extractor'][$extractor]['source'];
+
+			//  if 'source' is set, it's a file
+			if (isset($config['Extractor'][$extractor]['source'])) {
+				$file_id = $config['Extractor'][$extractor]['source'];
+				$source = File::get_by_id($file_id)->File->getFilename();
+			// if 'query' is set, it's a DB Query
+			} elseif (isset($config['Extractor'][$extractor]['query'])) {
+				$source = $config['Extractor'][$extractor]['query']);
+			}
+
 			$configuration = $config['Extractor'][$extractor]['config'];
-			if ($configuration['columns'][0]['key']) {
+			if (isset($configuration['columns'][0]) && $configuration['columns'][0]['key']) {
 				$configuration = $this->fixColumns($configuration);
 			}
+
 			$etl->extract($extractor, $source, $configuration);
 		} else {
 			$cerulean_query = "SELECT * FROM ETL_Record WHERE TypeID = " . $process->TypeID;
@@ -85,6 +98,7 @@ class RunETLProcesses extends BuildTask {
 		// Set up Loader, or use Cerulean Record storage
 		if (isset($config['Loader'])) {
 			$loader = array_keys($config['Loader'])[0];
+			// will need to process this a bit right here
 			$destination = $config['Loader'][$loader]['destination'];
 			$configuration = $config['Loader'][$loader]['config'];
 			$configuration = $this->fixColumns($configuration);
