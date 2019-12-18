@@ -117,7 +117,7 @@
               "properties": {
                 "columns": {
                   "title": "Columns to Extract",
-                  "description": "If your file has headers, the key value is the header from the file, and the value is what column it will map to after extraction.  If there are no headers, the key is the column post-extraction, and the value is a numeric reference to which column",
+                  "description": "If your file has headers, the key value is the header from the file, and the value is what column it will map to after extraction.  If there are no headers, the key is the column post-extraction, and the value is a numeric reference to which column.  If you do not specify any columns, the values from the first row will be used as the keys, and all columns will be added",
                   "required": true,
                   "$ref": "#/definitions/keyedColumns"
                 },
@@ -672,7 +672,7 @@
           "properties" : {
             "destination" : {
               "type" : "string",
-              "title" : "Database Table to load into"
+              "title" : "Path to file (relative to base)"
             },
             "config" : {
               "type": "object",
