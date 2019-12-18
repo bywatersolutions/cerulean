@@ -1,6 +1,10 @@
 {
   "title": "ETL Process",
   "type": "object",
+  "options": {
+    "disable_properties": false,
+    "disable_edit_json": false
+  },
   "properties": {
     "Extractor": {
       "type": "object",
@@ -101,10 +105,10 @@
   "definitions": {
     "csvExtractor" : {
       "title" : "CSV Extractor",
-      "description": "Extracts data from a character-separated values file",
       "type": "object",
       "properties" : {
         "csv": {
+          "title": "Extracts data from a character-separated values file",
           "type": "object",
           "required" : ["source", "config"],
           "properties": {
@@ -142,10 +146,10 @@
     },
     "fixedWidthExtractor" : {
       "title": "Fixed Width Extractor",
-      "description": "Extracts data from a fixed-width file",
       "type": "object",
       "properties" : {
         "fixed_width": {
+          "title": "Extracts data from a fixed-width file",
           "type": "object",
           "required": ["source", "config"],
           "properties": {
@@ -192,10 +196,10 @@
     },
     "jsonExtractor" : {
       "title": "JSON Extractor",
-      "description": "Extracts data from a JSON file",
       "type": "object",
       "properties" : {
         "json": {
+          "title": "Extracts data from a JSON file",
           "type": "object",
           "required": ["source", "config"],
           "properties": {
@@ -220,16 +224,17 @@
     },
     "queryExtractor" : {
       "title": "Query Extractor",
-      "description" : "Run an SQL Query against a database",
       "type": "object",
       "properties" : {
         "query": {
+          "title" : "Run an SQL Query against a database",
           "type": "object",
           "required": ["query", "config"],
           "properties" : {
             "query" : {
               "type": "string",
-              "title" : "SQL Query"
+              "title" : "SQL Query",
+	      "format" : "sql"
             },
             "config": {
               "type": "object",
@@ -248,10 +253,10 @@
     },
     "tableExtractor" : {
       "title": "Table Extractor",
-      "description" : "Extract an entire database table",
       "type": "object",
       "properties" : {
         "table": {
+          "title" : "Extract an entire database table",
           "type": "object",
           "required": ["table", "config"],
           "properties" : {
@@ -280,10 +285,10 @@
     },
     "simpleXMLExtractor" : {
       "title": "SimpleXML Extractor",
-      "description": "Extracts data from an XML file using XPath",
       "type": "object",
       "properties" : {
         "simplexml": {
+          "title": "Extracts data from an XML file using XPath",
           "type": "object",
           "required" : ["source", "config"],
           "properties": {
@@ -322,10 +327,10 @@
     },
     "xmlExtractor" : {
       "title": "XML Extractor",
-      "description": "Extracts data from an XML file.  Not as robust as SimpleXML Extractor; use that instead",
       "type": "object",
       "properties" : {
         "xml": {
+          "title": "Extracts data from an XML file.  Not as robust as SimpleXML Extractor; use that instead",
           "type": "object",
           "required": ["source", "config"],
           "properties": {
@@ -357,10 +362,10 @@
     },
     "dateTransformer": {
       "title": "Date Transformer",
-      "description": "Transform date fields from one format to another",
       "type": "object",
       "properties" : {
         "date": {
+          "title": "Transform date fields from one format to another",
           "type": "object",
           "required": ["config"],
           "properties": {
@@ -391,10 +396,10 @@
     },
     "mathTransformer": {
       "title": "Math Transformer",
-      "description": "Perform math operations on fields",
       "type": "object",
       "properties" : {
         "math": {
+          "title": "Perform math operations on fields",
           "type": "object",
           "required": ["config"],
           "properties": {
@@ -420,10 +425,10 @@
     },
     "trimTransformer": {
       "title": "Trim Transformer",
-      "description": "Remove leading/trailing whitespace from a field",
       "type": "object",
       "properties" : {
         "trim": {
+          "title": "Remove leading/trailing whitespace from a field",
           "type": "object",
           "required": ["config"],
           "properties": {
@@ -457,10 +462,10 @@
     },
     "uniqueRowsTransformer": {
       "title": "Unique Rows Transformer",
-      "description": "Filter for unique rows",
       "type": "object",
       "properties" : {
         "unique_rows": {
+          "title": "Filter for unique rows",
           "type": "object",
           "required": ["config"],
           "properties": {
@@ -486,10 +491,10 @@
     },
     "regexTransformer": {
       "title": "Regex Transformer",
-      "description": "Perform a regex search/replace on a field",
       "type": "object",
       "properties" : {
         "regex": {
+          "title": "Perform a regex search/replace on a field",
           "type": "object",
           "required": ["config"],
           "properties": {
@@ -521,10 +526,10 @@
     },
     "autoincrementTransformer": {
       "title": "Auto-Increment Transformer",
-      "description": "Set an auto-incrementing value to the row",
       "type": "object",
       "properties" : {
         "autoincrement": {
+          "title": "Set an auto-incrementing value to the row",
           "type": "object",
           "required": ["config"],
           "properties": {
@@ -549,10 +554,10 @@
     },
     "mapTransformer": {
       "title": "Map Transformer",
-      "description": "Map values to new values based on a provided mapping",
       "type": "object",
       "properties" : {
         "map": {
+          "title": "Map values to new values based on a provided mapping",
           "type": "object",
           "required": ["config"],
           "properties": {
@@ -581,10 +586,10 @@
     },
     "insertLoader": {
       "title": "Insert Loader",
-      "description" : "Inserts data into a database table",
       "type" : "object",
       "properties" : {
         "insert": {
+          "title" : "Inserts data into a database table",
           "type": "object",
           "required": ["destination", "config"],
           "properties" : {
@@ -619,10 +624,10 @@
     },
     "insertUpdateLoader": {
       "title": "Insert/Update Loader",
-      "description" : "Inserts or updates data into a database table, based on provided key column(s)",
       "type" : "object",
       "properties" : {
         "insert_update": {
+          "title" : "Inserts or updates data into a database table, based on provided key column(s)",
           "type": "object",
           "required": ["destination", "config"],
           "properties" : {
@@ -634,7 +639,6 @@
               "type": "object",
               "title": "Configuration",
               "properties": {
-
                 "connection" : {
                   "$ref" : "#/definitions/databases",
                   "title": "Database to Use",
@@ -663,10 +667,10 @@
     },
     "fileLoader": {
       "title": "File Loader",
-      "description" : "Save data to a file",
       "type" : "object",
       "properties" : {
         "file": {
+          "title" : "Save data to a file",
           "type": "object",
           "required": ["destination", "config"],
           "properties" : {
