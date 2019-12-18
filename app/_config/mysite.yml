@@ -7,13 +7,6 @@ SilverStripe\AssetAdmin\Controller\AssetAdmin:
   menu_priority: 4
 ETL_Process_Admin:
   menu_icon: 'app/images/pokeball.png'
-Silverstripe\Assets\File:
-  allowed_file_extensions:
-    - ldif
-    - sql
-    - mrc
-    - mrk
-    - data
 SilverStripe\PostgreSQL\PostgreSQLDatabase:
   allow_query_master_postgres: false
 

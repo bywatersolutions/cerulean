@@ -1,0 +1,21 @@
+---
+Name: ourassetsfiletypes
+---
+Silverstripe\Assets\File:
+  allowed_file_extensions:
+    - sql
+    - mrc
+    - mrk
+    - data
+    - xml
+    - ldif
+  file_types:
+    mrc: 'MARC file'
+    mrk: 'MARC file'
+    ldif: 'LDIF file (Apollo)'
+    xml: 'XML file'
+    csv: 'Delimited file'
+    tsv: 'Delimited file'
+    data: 'Ugly data file'
+    sql: 'SQL file'
+    json: 'JSON file'
