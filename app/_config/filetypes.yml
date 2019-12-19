@@ -19,3 +19,5 @@ Silverstripe\Assets\File:
     data: 'Ugly data file'
     sql: 'SQL file'
     json: 'JSON file'
+  extensions:
+    - FileConversionExtension
