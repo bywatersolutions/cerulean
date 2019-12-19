@@ -13,6 +13,8 @@ require("../../src/Loaders/File.php");
 require("../Spit_n_Polish.php");
 **/
 use SilverStripe\Dev\BuildTask;
+use SilverStripe\Core\Environment;
+
 use Marquine\Etl\Etl;
 use Marquine\Etl\Container;
 
@@ -46,6 +48,18 @@ class RunETLProcesses extends BuildTask {
 	foreach ($databases as $database) {
 		Etl::service('db')->addConnection(json_decode($database->Configuration), $database->Shortname);
 	}
+	// Bind local scratch space
+	$cerulean_config = [
+		'driver' => 'pgsql',
+		'host' => Environment::getEnv('SS_DATABASE_SERVER'),
+		'port' => Environment::getEnv('SS_DATABASE_PORT'),
+		'database' => Environment::getEnv('SS_DATABASE_NAME'),
+		'username' => Environment::getEnv('SS_DATABASE_USERNAME'),
+		'password' => Environment::getEnv('SS_DATABASE_PASSWORD'),
+		'charset' => 'utf8',
+		'schema' => 'public'
+	];
+	Etl::service('db')->addConnection($cerulean_config, 'default');
 
 	$etl = new Etl($container);
 
@@ -82,15 +96,16 @@ class RunETLProcesses extends BuildTask {
 
 			$etl->extract($extractor, $source, $configuration);
 		} else {
-			$cerulean_query = "SELECT * FROM ETL_Record WHERE TypeID = " . $process->TypeID;
-			//$etl->extract('query', "");
+			$cerulean_query = "SELECT * FROM \"ETL_Record\" WHERE \"TypeID\" = " . $process->TypeID;
+			$etl->extract('query', $cerulean_query, array('connection' => 'default'));
+			$etl->transform('callback', ['callback' => 'RunETLProcesses::denestJson']);
 		}
 
 		// Set up any Transformers defined
 		if (isset($config['Transformers'])) {
 			foreach($config['Transformers'] as $transformer) {
-				$transformer_type = array_keys($transformer['Transformer'])[0];
-				$configuration = $transformer['Transformer'][$transformer_type]['config'];
+				$transformer_type = array_keys($transformer)[0];
+				$configuration = $this->fixColumns($transformer[$transformer_type]['config']);
 				$etl->transform($transformer_type, $configuration);
 			}
 		}
@@ -104,7 +119,13 @@ class RunETLProcesses extends BuildTask {
 			$configuration = $this->fixColumns($configuration);
 			$etl->load($extractor, $destination, $configuration);
 		} else {
-			//$etl->load("insert_update", "Record");
+			$etl->transform('callback', ['callback' => 'RunETLProcesses::nestJson']);
+			$load_config = array();
+			$load_config['columns'] = array('legacyid', 'data', 'typename');
+			$load_config['connection'] = 'default';
+			$load_config['key'] = array("legacyid", "typename");
+			$load_config['commit_size'] = 500;
+			$etl->load("insert_update", '"ETL_Record"', $load_config);
 		}
 		echo "<h2>Results</h2>";
 		echo "<pre>";
@@ -128,4 +149,19 @@ class RunETLProcesses extends BuildTask {
 		$configuration['columns'] = $new_columns;
 		return $configuration;
     }
+
+    static function nestJson($row) {
+//     $row['hash'] = sha1(implode($row)); //spl_object_hash($row);
+       $row['data'] = json_encode($row->toArray());
+       // HACK ALERT
+       // Need a 'setDefaults' Transformer
+       $row['typename'] = 'patron';
+       return $row;
+    }
+
+    static function denestJson($row) {
+       $denested = json_decode($row['data']);
+       return $denested;
+    }
+
 }
