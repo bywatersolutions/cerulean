@@ -16,7 +16,7 @@ class ETL_Process extends DataObject {
 
 	private static $schema = "/app/json/ETL_Process_Schema_v5.json";
 
-	private static $file_source_folder = "Source Files";
+	private static $file_source_folder = "Source-Files";
 
 	private static $db = [
 		'Title' => 'Varchar(128)',
