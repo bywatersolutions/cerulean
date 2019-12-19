@@ -60,6 +60,9 @@
             "$ref": "#/definitions/autoincrementTransformer"
           },
           {
+            "$ref": "#/definitions/renameColumnsTransformer"
+          },
+          {
             "$ref": "#/definitions/mapTransformer"
           }
         ]
@@ -545,6 +548,29 @@
                   "type": "integer",
                   "title": "Starting Value",
                   "default": 1
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "renameColumnsTransformer": {
+      "title": "Rename Columns Transformer",
+      "type": "object",
+      "properties" : {
+        "rename_columns": {
+          "title": "Rename existing columns",
+          "type": "object",
+          "required": ["config"],
+          "properties": {
+            "config" : {
+              "type": "object",
+              "title": "Configuration",
+              "properties": {
+                "columns": {
+                  "title": "Columns to rename",
+                  "$ref": "#/definitions/keyedColumns"
                 }
               }
             }
