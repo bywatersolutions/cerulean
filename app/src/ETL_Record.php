@@ -9,9 +9,10 @@ class ETL_Record extends DataObject {
 	private static $plural_name = "Records";
 
 	private static $db = [
-		'Hash' => 'Varchar(40)',
-		'LegacyID' => 'Varchar(128)',
-		'Data' => 'Text'
+		'hash' => 'Varchar(40)',
+		'legacyid' => 'Varchar(128)',
+		'data' => 'Text',
+		'typename' => 'Varchar(128)'
 	];
 
 	private static $has_one = [
