@@ -83,11 +83,10 @@ class RunETLProcesses extends BuildTask {
 
 			//  if 'source' is set, it's a file
 			if (isset($config['Extractor'][$extractor]['source'])) {
-				$file_id = $config['Extractor'][$extractor]['source'];
-				$source = File::get_by_id($file_id)->File->getFilename();
+				$source = $config['Extractor'][$extractor]['source'];
 			// if 'query' is set, it's a DB Query
 			} elseif (isset($config['Extractor'][$extractor]['query'])) {
-				$source = $config['Extractor'][$extractor]['query']);
+				$source = $config['Extractor'][$extractor]['query'];
 			}
 
 			$configuration = $config['Extractor'][$extractor]['config'];
@@ -106,7 +105,10 @@ class RunETLProcesses extends BuildTask {
 		if (isset($config['Transformers'])) {
 			foreach($config['Transformers'] as $transformer) {
 				$transformer_type = array_keys($transformer)[0];
-				$configuration = $this->fixColumns($transformer[$transformer_type]['config']);
+				$configuration = $transformer[$transformer_type]['config'];
+				if (isset($configuration['columns']['0'] && $configuration['columns'[0]['key']) {
+					$configuration = $this->fixColumns($transformer[$transformer_type]['config']);
+				}
 				$etl->transform($transformer_type, $configuration);
 			}
 		}
