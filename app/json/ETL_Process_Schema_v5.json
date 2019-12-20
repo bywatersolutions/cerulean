@@ -63,6 +63,9 @@
             "$ref": "#/definitions/renameColumnsTransformer"
           },
           {
+            "$ref": "#/definitions/defaultsTransformer"
+          },
+          {
             "$ref": "#/definitions/mapTransformer"
           }
         ]
@@ -571,6 +574,35 @@
                 "columns": {
                   "title": "Columns to rename",
                   "$ref": "#/definitions/keyedColumns"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "defaultsTransformer": {
+      "title": "Default Values Transformer",
+      "type": "object",
+      "properties" : {
+        "defaults": {
+          "title": "Set default values for fields",
+          "type": "object",
+          "required": ["config"],
+          "properties": {
+            "config" : {
+              "type": "object",
+              "title": "Configuration",
+              "properties": {
+                "columns": {
+                  "title": "Column defaults to set",
+                  "$ref": "#/definitions/keyedColumns"
+                },
+                "force": {
+                  "title": "Overwrite existing values?",
+                  "type": "boolean",
+                  "default": false,
+                  "format": "checkbox"
                 }
               }
             }

@@ -38,6 +38,7 @@ class RunETLProcesses extends BuildTask {
 	$container->bind('regex_transformer', Marquine\Etl\Transformers\Regex::class);
 	$container->bind('callback_transformer', Marquine\Etl\Transformers\Callback::class);
 	$container->bind('map_transformer', Marquine\Etl\Transformers\Map::class);
+	$container->bind('defaults_transformer', Marquine\Etl\Transformers\Defaults::class);
 	$container->bind('autoincrement_transformer', Marquine\Etl\Transformers\AutoIncrement::class);
 
 	// Loaders
@@ -119,6 +120,7 @@ class RunETLProcesses extends BuildTask {
 			$configuration = $this->fixColumns($configuration);
 			$etl->load($extractor, $destination, $configuration);
 		} else {
+			$etl->transform('defaults', ['columns' => ['typename' => $process->Type()->Title], 'force' => true]);
 			$etl->transform('callback', ['callback' => 'RunETLProcesses::nestJson']);
 			$load_config = array();
 			$load_config['columns'] = array('legacyid', 'data', 'typename');
@@ -153,9 +155,6 @@ class RunETLProcesses extends BuildTask {
     static function nestJson($row) {
 //     $row['hash'] = sha1(implode($row)); //spl_object_hash($row);
        $row['data'] = json_encode($row->toArray());
-       // HACK ALERT
-       // Need a 'setDefaults' Transformer
-       $row['typename'] = 'patron';
        return $row;
     }
 
