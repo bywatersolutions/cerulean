@@ -81,9 +81,9 @@ class RunETLProcesses extends BuildTask {
 		if (isset($config['Extractor'])) {
 			$extractor = array_keys($config['Extractor'])[0];
 
-			//  if 'source' is set, it's a file
+			//  if 'source' is set, it's a file; set relative to full assets path
 			if (isset($config['Extractor'][$extractor]['source'])) {
-				$source = $config['Extractor'][$extractor]['source'];
+				$source = $_SERVER['DOCUMENT_ROOT'] . "/public/assets/" . $config['Extractor'][$extractor]['source'];
 			// if 'query' is set, it's a DB Query
 			} elseif (isset($config['Extractor'][$extractor]['query'])) {
 				$source = $config['Extractor'][$extractor]['query'];
@@ -96,7 +96,7 @@ class RunETLProcesses extends BuildTask {
 
 			$etl->extract($extractor, $source, $configuration);
 		} else {
-			$cerulean_query = "SELECT * FROM \"ETL_Record\" WHERE \"TypeID\" = " . $process->TypeID;
+			$cerulean_query = "SELECT * FROM \"ETL_Record\" WHERE \"TypeID\" = " . $process->RecordTypeID;
 			$etl->extract('query', $cerulean_query, array('connection' => 'default'));
 			$etl->transform('callback', ['callback' => 'RunETLProcesses::denestJson']);
 		}
@@ -106,7 +106,7 @@ class RunETLProcesses extends BuildTask {
 			foreach($config['Transformers'] as $transformer) {
 				$transformer_type = array_keys($transformer)[0];
 				$configuration = $transformer[$transformer_type]['config'];
-				if (isset($configuration['columns']['0'] && $configuration['columns'[0]['key']) {
+				if ( isset($configuration['columns']['0']) && $configuration['columns'][0]['key'] ) {
 					$configuration = $this->fixColumns($transformer[$transformer_type]['config']);
 				}
 				$etl->transform($transformer_type, $configuration);
@@ -122,7 +122,7 @@ class RunETLProcesses extends BuildTask {
 			$configuration = $this->fixColumns($configuration);
 			$etl->load($extractor, $destination, $configuration);
 		} else {
-			$etl->transform('defaults', ['columns' => ['typename' => $process->Type()->Title], 'force' => true]);
+			$etl->transform('defaults', ['columns' => ['typename' => $process->RecordType()->Title], 'force' => true]);
 			$etl->transform('callback', ['callback' => 'RunETLProcesses::nestJson']);
 			$load_config = array();
 			$load_config['columns'] = array('legacyid', 'data', 'typename');
