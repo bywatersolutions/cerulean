@@ -19,6 +19,14 @@ class ETL_Record extends DataObject {
 		'Type' => ETL_RecordType::class
 	];
 
+	private static $indexes = [
+        	'hash' => true,
+        	'type_id' => [
+            		'type' => 'unique',
+            		'columns' => ['legacyid', 'typename'],
+        	]
+	];
+
 	//public function summaryFields() {
 	//	return explode(",", $this->Type()->RecordFields);
 	//}
