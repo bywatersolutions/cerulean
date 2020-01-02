@@ -2,7 +2,7 @@
 Name: ourassetsfiletypes
 ---
 Silverstripe\Assets\File:
-  allowed_file_extensions:
+  allowed_extensions:
     - sql
     - mrc
     - mrk
