@@ -6,9 +6,10 @@ Silverstripe\Assets\File:
     - sql
     - mrc
     - mrk
-    - data
+    - dat
     - xml
     - ldif
+    - ord
   file_types:
     mrc: 'MARC file'
     mrk: 'MARC file'
@@ -16,8 +17,9 @@ Silverstripe\Assets\File:
     xml: 'XML file'
     csv: 'Delimited file'
     tsv: 'Delimited file'
-    data: 'Ugly data file'
+    dat: 'MARC file'
     sql: 'SQL file'
     json: 'JSON file'
+    ord: 'MARC file'
   extensions:
     - FileConversionExtension
