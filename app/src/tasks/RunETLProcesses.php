@@ -133,6 +133,17 @@ class RunETLProcesses extends BuildTask {
 			$load_config['commit_size'] = 500;
 			$etl->load("insert_update", '"ETL_Record"', $load_config);
 		}
+
+		// Limit rows, if configured
+		if (isset($config['limit'])) {
+			$etl->limit($config['limit']);
+		}
+
+		// Skip rows, if configured
+		if (isset($config['skip'])) {
+			$etl->skip($config['skip']);
+		}
+
 		echo "<h2>Results</h2>";
 		echo "<pre>";
 		var_dump($etl->toArray());
