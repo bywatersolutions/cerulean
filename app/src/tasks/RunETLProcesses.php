@@ -32,6 +32,7 @@ class RunETLProcesses extends BuildTask {
 	$container = Container::getInstance();
 	// Extractors
 	$container->bind('simplexml_extractor', Marquine\Etl\Extractors\Xml2::class);
+	$container->bind('marc_extractor', Marquine\Etl\Extractors\MARC::class);
 
 	// Transformers
 	$container->bind('date_transformer', Marquine\Etl\Transformers\Date::class);

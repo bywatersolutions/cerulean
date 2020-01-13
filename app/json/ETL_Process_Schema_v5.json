@@ -29,6 +29,9 @@
           "$ref": "#/definitions/tableExtractor"
         },
         {
+          "$ref": "#/definitions/marcExtractor"
+        },
+        {
           "$ref": "#/definitions/simpleXMLExtractor"
         }
       ]
@@ -322,6 +325,53 @@
                 "columns": {
                   "title": "Columns to Extract",
                   "description" : "Key is the column name post-extraction; Value is valid XPath to the desired element.  Note that parent values (outside the looped element) CAN be referenced!",
+                  "required": true,
+                  "$ref": "#/definitions/keyedColumns"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "marcExtractor" : {
+      "title": "MARC Extractor",
+      "type": "object",
+      "properties" : {
+        "marc": {
+          "title": "Extracts data from a collection of MARC records",
+          "type": "object",
+          "required" : ["source", "config"],
+          "properties": {
+            "source" : {
+              "$ref": "#/definitions/sourceFiles"
+            },
+            "config": {
+              "type": "object",
+              "title": "Configuration",
+              "properties" :{
+                "id_path" : {
+                  "title" : "ID Path",
+                  "description" : "The MARCspec path to the legacyid",
+                  "type": "string",
+                  "required": true,
+                  "default": "001"
+                },
+                "holdings_tag" : {
+                  "title" : "ID Path",
+                  "description" : "The MARCspec path holding/item level data; if unspecified, only bib level data will be extracted",
+                  "type": "string"
+                },
+                "separator" : {
+                  "title" : "Separator",
+                  "description" : "Pattern to use to separate multiple returned values for a field",
+                  "type": "string",
+                  "required": true,
+                  "default": " | "
+                },
+                "columns": {
+                  "title": "Columns to Extract",
+                  "description" : "Key is the column name post-extraction; Value is valid MARCspec to the desired value.  Note that parent values (outside the looped element) CAN be referenced!",
                   "required": true,
                   "$ref": "#/definitions/keyedColumns"
                 }
