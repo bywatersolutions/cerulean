@@ -27,7 +27,11 @@ class ETL_Record extends DataObject {
         	]
 	];
 
-	//public function summaryFields() {
-	//	return explode(",", $this->Type()->RecordFields);
-	//}
+	public function summaryFields() {
+		if ($this->Type()->RecordFields) {
+			return explode(",", $this->Type()->RecordFields);
+		} else {
+			return array('legacyid', 'typename');
+		}
+	}
 }
