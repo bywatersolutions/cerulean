@@ -14,6 +14,7 @@ require("../Spit_n_Polish.php");
 **/
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\Core\Environment;
+use SilverStripe\ORM\DB;
 
 use Marquine\Etl\Etl;
 use Marquine\Etl\Container;
@@ -138,6 +139,8 @@ class RunETLProcesses extends BuildTask {
 
 		// Once we're ready....
 		// $etl->run();
+
+                $sync = DB::query('UPDATE "ETL_Record" SET "TypeID" = ' . $process->RecordTypeID . ' WHERE typename = \'' . $process->RecordType()->Title . '\'')->value();
 
 	} else {
 		echo "<h2>Process not found</h2>";
