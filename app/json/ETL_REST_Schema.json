@@ -1,0 +1,38 @@
+{
+  "title" : "ETL RESTful API Connection",
+  "description" : "Configuration for a GuzzleHttp RESTful API Client",
+  "type" : "object",
+  "properties" : {
+    "base_uri": {
+      "type" : "string",
+      "description": "Base URL for the RESTful service (includes http(s) )"
+    },
+    "headers" : {
+      "type": "array",
+      "description" : "List of HTTP headers to send",
+      "$ref": "#/definitions/keyedColumns"
+    }
+  },
+  "required": [ "base_uri" ],
+  "definitions" :
+    "keyedColumns": {
+      "type": "array",
+      "format": "table",
+      "items": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "title": "Key",
+            "type": "string",
+            "required": true
+          },
+          "value": {
+            "title" : "Value",
+            "type": "string",
+            "required": true
+          }
+        }
+      }
+    }
+  }
+}

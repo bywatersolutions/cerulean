@@ -49,8 +49,10 @@ class RunETLProcesses extends BuildTask {
 	// Bind Remote Databases
 	$databases = ETL_DB::get();
 	foreach ($databases as $database) {
-		Etl::service('db')->addConnection(json_decode($database->Configuration), $database->Shortname);
+		$db_config = json_decode($database->Configuration, true);
+		Etl::service('db')->addConnection($db_config['config'], $database->Shortname);
 	}
+
 	// Bind local scratch space
 	$cerulean_config = [
 		'driver' => 'pgsql',
@@ -63,6 +65,17 @@ class RunETLProcesses extends BuildTask {
 		'schema' => 'public'
 	];
 	Etl::service('db')->addConnection($cerulean_config, 'default');
+
+	// enable RESTful API connections
+        $container->singleton(Marquine\Etl\REST\Manager::class);
+        $container->alias(Marquine\Etl\REST\Manager::class, 'rest');
+
+	// Bind RESTful API connections
+	$restfuls = ETL_REST::get();
+	foreach ($restfuls as $restful) {
+		$rest_config = json_decode($restful->Configuration, true);
+		Etl::service('rest')->addConnection(json_decode($rest_config['config']), $restful->Shortname);
+	}
 
 	$etl = new Etl($container);
 
