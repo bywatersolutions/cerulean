@@ -92,10 +92,10 @@ class Load_Admin extends ModelAdmin {
 class ETL_DB_Admin extends ModelAdmin {
 
     private static $managed_models = [
-        'ETL_DB'
+        'ETL_DB', 'ETL_REST'
     ];
 
-    private static $url_segment = 'etl_dbs';
+    private static $url_segment = 'remotes';
 
     private static $menu_title = 'Remote Connections';
 
