@@ -2,6 +2,10 @@
   "title" : "ETL Database",
   "description" : "Configuration for an PHP-ETL Database",
   "type" : "object",
+  "options": {
+    "disable_properties": false,
+    "disable_edit_json": false
+  },
   "properties" : {
     "config": {
       "title": "Database Type",
