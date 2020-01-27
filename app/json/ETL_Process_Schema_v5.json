@@ -31,6 +31,9 @@
         {
           "$ref": "#/definitions/marcExtractor"
         },
+	{
+	  "$ref": "#/definitions/getExtractor"
+	},
         {
           "$ref": "#/definitions/simpleXMLExtractor"
         }
@@ -374,6 +377,39 @@
                   "description" : "Key is the column name post-extraction; Value is valid MARCspec to the desired value.  Note that parent values (outside the looped element) CAN be referenced!",
                   "required": true,
                   "$ref": "#/definitions/keyedColumns"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "getExtractor" : {
+      "title": "GET Extractor",
+      "type": "object",
+      "properties" : {
+        "get": {
+          "title" : "Extract from an HTTP GET request",
+          "type": "object",
+          "required": ["endpoint", "config"],
+          "properties" : {
+            "endpoint": {
+              "type": "string",
+              "title": "API Endpoint (relative to connection)"
+            },
+            "config" :{
+              "type": "object",
+              "title": "Configuration",
+              "properties": {
+                "connection" : {
+                  "$ref" : "#/definitions/rests",
+                  "title": "RESTful Connection to Use",
+                  "required": true
+                },
+                "columns" : {
+                  "title" : "Columns to Extract",
+                  "description" : "Key is the column name post-extraction; Value is valid JSONPath to the desired value.",
+                  "$ref" : "#/definitions/keyedColumns"
                 }
               }
             }
@@ -857,6 +893,14 @@
       "enum": ["default"],
       "options": {
         "enum_titles": ["Default"]
+      }
+    },
+    "rests" : {
+      "type": "string",
+      "title": "RESTful Connection",
+      "enum": ["default"],
+      "options": {
+        "enum_titles": ["Default (not set)"]
       }
     },
     "fieldHeaders" : {

@@ -90,6 +90,13 @@ class ETL_Process extends DataObject {
 		$schema_array->{'definitions'}->{'databases'}->{'enum'} = $db_paths;
 		$schema_array->{'definitions'}->{'databases'}->{'options'}->{'enum_titles'} = $db_titles;
 
+		// Enumerate RESTful Connections
+		$rests = ETL_REST::get()->map('Title', 'Shortname')->toArray();
+		$rest_titles = array_keys($rests);
+		$rest_paths = array_values($rests);
+		$schema_array->{'definitions'}->{'rests'}->{'enum'} = $rest_paths;
+		$schema_array->{'definitions'}->{'rests'}->{'options'}->{'enum_titles'} = $rest_titles;
+
 		// Enumerate Columns
 		$columns = explode(',', $this->RecordType()->RecordFields);
 		if ($columns) {

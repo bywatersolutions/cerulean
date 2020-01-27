@@ -34,6 +34,7 @@ class RunETLProcesses extends BuildTask {
 	// Extractors
 	$container->bind('simplexml_extractor', Marquine\Etl\Extractors\Xml2::class);
 	$container->bind('marc_extractor', Marquine\Etl\Extractors\MARC::class);
+	$container->bind('get_extractor', Marquine\Etl\Extractors\GET::class);
 
 	// Transformers
 	$container->bind('date_transformer', Marquine\Etl\Transformers\Date::class);
@@ -75,32 +76,7 @@ class RunETLProcesses extends BuildTask {
 	$restfuls = ETL_REST::get();
 	foreach ($restfuls as $restful) {
 		$rest_config = json_decode($restful->Configuration, true);
-		if (isset($rest_config['config']['headers'])) {
-			$old_headers = $rest_config['config']['headers'];
-			$new_headers = [];
-			foreach ($old_headers as $old) {
-				$new_headers[$old['key']] = $old['value'];
-			}
-			$rest_config['config']['headers'] = $new_headers;
-		}
-		if (isset($rest_config['authentication']['url'])) {
-			// get the token
-			$auth_client = new Client($rest_config);
-			$request = $auth_client->post($rest_config['authentication']['url'],
-				['json' => ['username' => $rest_config['authentication']['username'],
-					    'password' => $rest_config['authentication']['password']]
-				]
-			);
-			$token = $request->getHeader($rest_config['authentication']['header'])[0];
-			// plunk it into the set header
-			$rest_config['config']['headers'][$rest_config['authentication']['header']] = $token;
-		} elseif (isset($rest_config['authentication']['token'])) {
-			// insert token into Authentication header
-                } elseif (isset($rest_config['authentication']['username']) && isset($rest_config['authentication']['password']) ) {
-			// add basic HTTP auth
-		}
-
-		Etl::service('rest')->addConnection(json_decode($rest_config['config']), $restful->Shortname);
+		Etl::service('rest')->addConnection($rest_config['config'], $restful->Shortname);
 	}
 
 	$etl = new Etl($container);
@@ -110,6 +86,11 @@ class RunETLProcesses extends BuildTask {
 	if (isset($vars['process']) and is_numeric($vars['process'])) {
 		$process = ETL_Process::get_by_id($vars['process']);
 	}
+	$debug = false;
+	if (isset($vars['debug']) ) {
+		$debug = true;
+	}
+
 
 	if ($process) {
 		echo "<h2>".$process->Title."</h2>";
@@ -183,13 +164,14 @@ class RunETLProcesses extends BuildTask {
 			$etl->skip($config['skip']);
 		}
 
-		echo "<h2>Results</h2>";
-		echo "<pre>";
-		var_dump($etl->toArray());
-		echo "</pre>";
-
-		// Once we're ready....
-		// $etl->run();
+		if ($debug) {
+			echo "<h2>Results</h2>";
+			echo "<pre>";
+			var_dump($etl->toArray());
+			echo "</pre>";
+		} else {
+			$etl->run();
+		}
 
                 $sync = DB::query('UPDATE "ETL_Record" SET "TypeID" = ' . $process->RecordTypeID . ' WHERE typename = \'' . $process->RecordType()->Title . '\'')->value();
 
