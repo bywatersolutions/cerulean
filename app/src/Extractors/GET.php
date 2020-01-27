@@ -5,6 +5,7 @@ namespace Marquine\Etl\Extractors;
 use Marquine\Etl\Row;
 use Marquine\Etl\REST\Manager;
 
+use Flow\JSONPath\JSONPath;
 use GuzzleHttp\Client;
 
 class GET extends Extractor
@@ -15,6 +16,13 @@ class GET extends Extractor
      * @var array
      */
     protected $columns = [];
+
+    /**
+     * JSONPath to loop over.
+     *
+     * @var string
+     */
+    protected $loop = '';
 
     /**
      * The connection name.
@@ -43,7 +51,7 @@ class GET extends Extractor
      * @var array
      */
     protected $availableOptions = [
-        'columns', 'connection', 'config'
+        'columns', 'connection', 'config', 'loop'
     ];
 
     /**
@@ -64,14 +72,17 @@ class GET extends Extractor
      */
     public function extract()
     {
-	    $client = $manager->getConnection($this->connection);
+	    $client = $this->rest->getConnection($this->connection);
 	    $response = $client->get($this->input, $this->config);
-            $response_array = json_decode($response->getBody());
-	    foreach ($response_array as $data) {
+            $response_complete = json_decode($response->getBody());
+            $responseJSON = new JSONPath($response_complete);
+            $response_array = $responseJSON->find($this->loop)->data();
+            foreach ($response_array[0] as $data) {
+                   $row = [];
 		   $jsonPath = new JSONPath($data);
 	           foreach ($this->columns as $key => $path) {
                 	if ($path) {
-				$this->row[$key] = $jsonPath->find($path)->data();
+				$row[$key] = $jsonPath->find($path)->data();
                 	}
 		   }
 		   $row['record'] = $data;

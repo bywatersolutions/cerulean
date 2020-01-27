@@ -10,7 +10,7 @@
     "config": {
       "title" : "Configuration",
       "type" : "object",
-      "required": [ "base_uri", "headers" ],
+      "required": [ "base_uri", "headers", "authentication" ],
       "properties": {
         "base_uri": {
           "title": "Base URI",
@@ -22,23 +22,23 @@
           "type": "array",
           "description" : "List of HTTP headers to send",
           "$ref": "#/definitions/keyedColumns"
+        },
+        "authentication" : {
+          "title": "Authentication",
+          "type" : "object",
+          "oneOf" : [
+            {
+              "$ref": "#/definitions/httpBasicAuth"
+            },
+            {
+              "$ref": "#/definitions/authHeader"
+            },
+            {
+              "$ref": "#/definitions/fetchToken"
+            }
+          ]
         }
       }
-    },
-    "authentication" : {
-      "title": "Authentication",
-      "type" : "object",
-      "oneOf" : [
-        {
-          "$ref": "#/definitions/httpBasicAuth"
-        },
-        {
-          "$ref": "#/definitions/authHeader"
-        },
-        {
-          "$ref": "#/definitions/fetchToken"
-        }
-      ]
     }
   },
   "definitions" : {

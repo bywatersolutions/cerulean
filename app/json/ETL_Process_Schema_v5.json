@@ -406,6 +406,11 @@
                   "title": "RESTful Connection to Use",
                   "required": true
                 },
+		"loop" : {
+                  "title" : "JSONPath to array of records",
+                  "description": "Records may be nested in an element if the result is not a top-level array",
+                   "type": "string"
+                },
                 "columns" : {
                   "title" : "Columns to Extract",
                   "description" : "Key is the column name post-extraction; Value is valid JSONPath to the desired value.",

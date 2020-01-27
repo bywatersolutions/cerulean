@@ -109,6 +109,9 @@ class RunETLProcesses extends BuildTask {
 			// if 'query' is set, it's a DB Query
 			} elseif (isset($config['Extractor'][$extractor]['query'])) {
 				$source = $config['Extractor'][$extractor]['query'];
+                        // if 'endpoint' is set, it's a RESTful connection
+                        } elseif (isset($config['Extractor'][$extractor]['endpoint'])) {
+                                $source = $config['Extractor'][$extractor]['endpoint'];
 			}
 
 			$configuration = $config['Extractor'][$extractor]['config'];
