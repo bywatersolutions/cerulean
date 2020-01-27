@@ -55,7 +55,7 @@ class Transform_Admin extends ModelAdmin {
 
 	public function init() {
 		parent::init();
-		Requirements::javascript("app/javascript/ws.js");
+//		Requirements::javascript("app/javascript/ws.js");
 	}
 
 	public function getEditForm($id = null, $fields = null) {
