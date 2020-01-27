@@ -2,6 +2,7 @@
 namespace Marquine\Etl\REST;
 
 use InvalidArgumentException;
+use GuzzleHttp\Client;
 
 class Manager
 {

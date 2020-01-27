@@ -2,19 +2,46 @@
   "title" : "ETL RESTful API Connection",
   "description" : "Configuration for a GuzzleHttp RESTful API Client",
   "type" : "object",
+  "options": {
+    "disable_properties": false,
+    "disable_edit_json": false
+  },
   "properties" : {
-    "base_uri": {
-      "type" : "string",
-      "description": "Base URL for the RESTful service (includes http(s) )"
+    "config": {
+      "title" : "Configuration",
+      "type" : "object",
+      "required": [ "base_uri", "headers" ],
+      "properties": {
+        "base_uri": {
+          "title": "Base URI",
+          "type" : "string",
+          "description": "Base URL for the RESTful service (includes http(s) )"
+        },
+        "headers" : {
+          "title" : "HTTP Request Headers",
+          "type": "array",
+          "description" : "List of HTTP headers to send",
+          "$ref": "#/definitions/keyedColumns"
+        }
+      }
     },
-    "headers" : {
-      "type": "array",
-      "description" : "List of HTTP headers to send",
-      "$ref": "#/definitions/keyedColumns"
+    "authentication" : {
+      "title": "Authentication",
+      "type" : "object",
+      "oneOf" : [
+        {
+          "$ref": "#/definitions/httpBasicAuth"
+        },
+        {
+          "$ref": "#/definitions/authHeader"
+        },
+        {
+          "$ref": "#/definitions/fetchToken"
+        }
+      ]
     }
   },
-  "required": [ "base_uri" ],
-  "definitions" :
+  "definitions" : {
     "keyedColumns": {
       "type": "array",
       "format": "table",
@@ -31,6 +58,61 @@
             "type": "string",
             "required": true
           }
+        }
+      }
+    },
+    "httpBasicAuth" : {
+      "type": "object",
+      "title": "HTTP Basic Authentication",
+      "properties" : {
+        "username" : {
+          "type": "string",
+          "title" : "Username",
+          "required": true
+        },
+        "password" : {
+          "type": "string",
+          "title" : "Password",
+          "required": true
+        }
+      }
+    },
+    "authHeader" : {
+      "type" : "object",
+      "title": "HTTP Authorization Header",
+      "properties": {
+        "token" : {
+          "type" : "string",
+          "title": "Value to place in HTTP Authorization Header",
+          "description" : "Include prefixes like 'Bearer'",
+          "required" : true
+        }
+      }
+    },
+    "fetchToken" : {
+      "type": "object",
+      "title": "Fetch a Token",
+      "properties" : {
+        "url" : {
+          "type": "string",
+	  "title": "Token URL",
+          "description" : "Where to fetch the token from; can be relative or full URL",
+          "required": true
+        },
+        "username" : {
+          "type": "string",
+          "title" : "Username",
+          "required": true
+        },
+        "password" : {
+          "type": "string",
+          "title" : "Password",
+          "required": true
+        },
+        "header" : {
+          "type": "string",
+          "title": "Header for token",
+          "description": "HTTP Request Header to place token in, once received"
         }
       }
     }

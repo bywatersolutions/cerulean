@@ -19,6 +19,7 @@ use SilverStripe\ORM\DB;
 use Marquine\Etl\Etl;
 use Marquine\Etl\Container;
 
+use GuzzleHttp\Client;
 
 class RunETLProcesses extends BuildTask {
 
@@ -74,6 +75,31 @@ class RunETLProcesses extends BuildTask {
 	$restfuls = ETL_REST::get();
 	foreach ($restfuls as $restful) {
 		$rest_config = json_decode($restful->Configuration, true);
+		if (isset($rest_config['config']['headers'])) {
+			$old_headers = $rest_config['config']['headers'];
+			$new_headers = [];
+			foreach ($old_headers as $old) {
+				$new_headers[$old['key']] = $old['value'];
+			}
+			$rest_config['config']['headers'] = $new_headers;
+		}
+		if (isset($rest_config['authentication']['url'])) {
+			// get the token
+			$auth_client = new Client($rest_config);
+			$request = $auth_client->post($rest_config['authentication']['url'],
+				['json' => ['username' => $rest_config['authentication']['username'],
+					    'password' => $rest_config['authentication']['password']]
+				]
+			);
+			$token = $request->getHeader($rest_config['authentication']['header'])[0];
+			// plunk it into the set header
+			$rest_config['config']['headers'][$rest_config['authentication']['header']] = $token;
+		} elseif (isset($rest_config['authentication']['token'])) {
+			// insert token into Authentication header
+                } elseif (isset($rest_config['authentication']['username']) && isset($rest_config['authentication']['password']) ) {
+			// add basic HTTP auth
+		}
+
 		Etl::service('rest')->addConnection(json_decode($rest_config['config']), $restful->Shortname);
 	}
 
