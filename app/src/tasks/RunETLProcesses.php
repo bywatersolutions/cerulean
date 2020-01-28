@@ -117,7 +117,7 @@ class RunETLProcesses extends BuildTask {
 			}
 
 			$configuration = $config['Extractor'][$extractor]['config'];
-			if (isset($configuration['columns'][0]) && $configuration['columns'][0]['key']) {
+			if (isset($configuration['columns'][0]) && isset($configuration['columns'][0]['key'])) {
 				$configuration = $this->fixColumns($configuration);
 			}
 
@@ -133,7 +133,7 @@ class RunETLProcesses extends BuildTask {
 			foreach($config['Transformers'] as $transformer) {
 				$transformer_type = array_keys($transformer)[0];
 				$configuration = $transformer[$transformer_type]['config'];
-				if ( isset($configuration['columns']['0']) && $configuration['columns'][0]['key'] ) {
+				if ( isset($configuration['columns'][0]) && isset($configuration['columns'][0]['key']) ) {
 					$configuration = $this->fixColumns($transformer[$transformer_type]['config']);
 				}
 				$etl->transform($transformer_type, $configuration);
@@ -145,7 +145,7 @@ class RunETLProcesses extends BuildTask {
 			$loader = array_keys($config['Loader'])[0];
 			$destination = $config['Loader'][$loader]['destination'];
 			$configuration = $config['Loader'][$loader]['config'];
-			if ( isset($configuration['columns']['0']) && $configuration['columns'][0]['key'] ) {
+			if ( isset($configuration['columns'][0]) && isset($configuration['columns'][0]['key']) ) {
 				$configuration = $this->fixColumns($configuration);
 			}
 			$etl->load($loader, $destination, $configuration);
