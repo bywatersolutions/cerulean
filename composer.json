@@ -15,7 +15,8 @@
 	"silvershop/silverstripe-hasonefield" : "^3.0",
 	"symbiote/silverstripe-gridfieldextensions" : "^3.2",
 	"scriptotek/marc": "dev-master",
-        "guzzlehttp/guzzle" : "^7.0"
+        "guzzlehttp/guzzle" : "^7.0",
+        "ramsey/uuid": "^3.9"
     },
     "authors": [
         {

@@ -66,6 +66,9 @@
             "$ref": "#/definitions/autoincrementTransformer"
           },
           {
+            "$ref": "#/definitions/uuidTransformer"
+          },
+          {
             "$ref": "#/definitions/renameColumnsTransformer"
           },
           {
@@ -642,6 +645,39 @@
                   "type": "integer",
                   "title": "Starting Value",
                   "default": 1
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "uuidTransformer": {
+      "title": "UUID Transformer",
+      "type": "object",
+      "properties" : {
+        "uuid": {
+          "title": "Set a UUID",
+          "type": "object",
+          "required": ["config"],
+          "properties": {
+            "config" : {
+              "type": "object",
+              "title": "Configuration",
+              "properties": {
+                "columns": {
+                  "title": "Columns to set UUIDs in",
+                  "$ref": "#/definitions/fieldHeaders"
+                },
+                "version": {
+                  "type": "integer",
+                  "title": "UUID Version",
+                  "default": 4,
+                  "enum": [1,3,4,5]
+                },
+                "uuid_namespace" : {
+                  "type": "string",
+                  "title": "Namespace UUID (for version 3 and 5)"
                 }
               }
             }
