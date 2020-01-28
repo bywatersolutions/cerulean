@@ -6,8 +6,6 @@ use Marquine\Etl\Row;
 use Marquine\Etl\Transformers\Transformer;
 use InvalidArgumentException;
 
-use Ramsey\Uuid\Uuid as RamseyUUID;
-
 class UUID extends Transformer
 {
     /**
@@ -54,6 +52,7 @@ class UUID extends Transformer
     public function initialize()
     {
         $this->function = $this->getUUIDFunction();
+        $this->uuid_namespace = \Ramsey\Uuid\Uuid::uuid5(\Ramsey\Uuid\Uuid::NIL, $this->uuid_namespace);
     }
 
     /**
@@ -69,7 +68,8 @@ class UUID extends Transformer
 	    if ($this->version == 3 or $this->version == 5) {
 		$args = array_merge([$this->uuid_namespace], $args);
 	    }
-            return call_user_func_array($this->function, $args);
+            $uuid = call_user_func_array($this->function, $args);
+            return $uuid->toString();
         });
     }
 
@@ -78,17 +78,17 @@ class UUID extends Transformer
      *
      * @return string
      */
-    protected function getReplaceFunction()
+    protected function getUUIDFunction()
     {
         switch ($this->version) {
             case '1':
-                return 'RamseyUUID::uuid1';
+                return '\Ramsey\Uuid\Uuid::uuid1';
             case '3':
-                return 'RamseyUUID::uuid3';
+                return '\Ramsey\Uuid\Uuid::uuid3';
             case '4':
-                return 'RamseyUUID::uuid4';
+                return '\Ramsey\Uuid\Uuid::uuid4';
             case '5':
-                return 'RamseyUUID::uuid5';
+                return '\Ramsey\Uuid\Uuid::uuid5';
         }
 
         throw new InvalidArgumentException("The version [$this->version}] is invalid.");

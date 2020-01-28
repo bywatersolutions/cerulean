@@ -44,7 +44,7 @@ class RunETLProcesses extends BuildTask {
 	$container->bind('map_transformer', Marquine\Etl\Transformers\Map::class);
 	$container->bind('defaults_transformer', Marquine\Etl\Transformers\Defaults::class);
 	$container->bind('autoincrement_transformer', Marquine\Etl\Transformers\AutoIncrement::class);
-	$container->bine('uuid_transformer', Marquine\Etl\Transformers\UUID::class);
+	$container->bind('uuid_transformer', Marquine\Etl\Transformers\UUID::class);
 
 	// Loaders
 	$container->bind('file_loader', Marquine\Etl\Loaders\File::class);
