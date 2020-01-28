@@ -93,11 +93,13 @@ class RunETLProcesses extends BuildTask {
 
 
 	if ($process) {
-		echo "<h2>".$process->Title."</h2>";
-		$config = json_decode($process->Configuration, true);
-		echo "<pre>";
-		var_dump($config);
-		echo "</pre>";
+		if ($debug) {
+			echo "<h2>".$process->Title."</h2>";
+			$config = json_decode($process->Configuration, true);
+			echo "<pre>";
+			var_dump($config);
+			echo "</pre>";
+		}
 
 		// Set up Extractor, or use local Cerulean Record store
 		if (isset($config['Extractor'])) {
@@ -121,7 +123,7 @@ class RunETLProcesses extends BuildTask {
 
 			$etl->extract($extractor, $source, $configuration);
 		} else {
-			$cerulean_query = "SELECT * FROM \"ETL_Record\" WHERE \"TypeID\" = " . $process->RecordTypeID;
+			$cerulean_query = "SELECT data FROM \"ETL_Record\" WHERE \"TypeID\" = " . $process->RecordTypeID;
 			$etl->extract('query', $cerulean_query, array('connection' => 'default'));
 			$etl->transform('callback', ['callback' => 'RunETLProcesses::denestJson']);
 		}
@@ -141,11 +143,12 @@ class RunETLProcesses extends BuildTask {
 		// Set up Loader, or use Cerulean Record storage
 		if (isset($config['Loader'])) {
 			$loader = array_keys($config['Loader'])[0];
-			// will need to process this a bit right here
 			$destination = $config['Loader'][$loader]['destination'];
 			$configuration = $config['Loader'][$loader]['config'];
-			$configuration = $this->fixColumns($configuration);
-			$etl->load($extractor, $destination, $configuration);
+			if ( isset($configuration['columns']['0']) && $configuration['columns'][0]['key'] ) {
+				$configuration = $this->fixColumns($configuration);
+			}
+			$etl->load($loader, $destination, $configuration);
 		} else {
 			$etl->transform('defaults', ['columns' => ['typename' => $process->RecordType()->Title], 'force' => true]);
 			$etl->transform('callback', ['callback' => 'RunETLProcesses::nestJson']);
@@ -184,24 +187,28 @@ class RunETLProcesses extends BuildTask {
     }
 
     function fixColumns($configuration) {
-		$old_columns = $configuration['columns'];
-		$new_columns = [];
-		foreach ($old_columns as $old) {
-			$new_columns[$old['key']] = $old['value'];
-		}
-		$configuration['columns'] = $new_columns;
-		return $configuration;
+	$old_columns = $configuration['columns'];
+	$new_columns = [];
+	foreach ($old_columns as $old) {
+		$new_columns[$old['key']] = $old['value'];
+	}
+	$configuration['columns'] = $new_columns;
+	return $configuration;
     }
 
     static function nestJson($row) {
-//     $row['hash'] = sha1(implode($row)); //spl_object_hash($row);
-       $row['data'] = json_encode($row->toArray());
-       return $row;
+        $data = $row;
+        unset($data['data']);
+        $row['data'] = json_encode($data->toArray());
+        return $row;
     }
 
     static function denestJson($row) {
-       $denested = json_decode($row['data']);
-       return $denested;
+       $data = json_decode($row['data'], true);
+        unset($row['data']);
+        foreach ($data as $key => $value) {
+                $row[$key] = $value;
+        }
     }
 
 }
