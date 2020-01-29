@@ -673,7 +673,7 @@
                   "type": "integer",
                   "title": "UUID Version",
                   "default": 4,
-                  "enum": [1,3,4,5]
+                  "enum": [1,3,4,5],
                   "options" : {
                     "enum_titles" : ["Version 1 - time-based", "Version 3 - MD5 hash of value in column", "Version 4 - Random", "Version 5 - SHA-1 hash of value in column"]
                   }
