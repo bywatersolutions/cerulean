@@ -727,6 +727,7 @@
               "properties": {
                 "columns": {
                   "title": "Column defaults to set",
+		  "description": "You can provide a literal value, or a reference to a column by wrapping in {}",
                   "$ref": "#/definitions/keyedColumns"
                 },
                 "force": {
