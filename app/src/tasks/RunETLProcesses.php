@@ -29,6 +29,8 @@ class RunETLProcesses extends BuildTask {
 
     protected $enabled = true;
 
+    protected $process = 0;
+
     function run($request) {
 	$container = Container::getInstance();
 	// Extractors
@@ -48,6 +50,7 @@ class RunETLProcesses extends BuildTask {
 
 	// Loaders
 	$container->bind('file_loader', Marquine\Etl\Loaders\File::class);
+	$container->bind('post_loader', Marquine\Etl\Loaders\POST::class);
 
 	// Bind Remote Databases
 	$databases = ETL_DB::get();
@@ -83,9 +86,8 @@ class RunETLProcesses extends BuildTask {
 	$etl = new Etl($container);
 
 	$vars = $request->getVars();
-	$process = 0;
 	if (isset($vars['process']) and is_numeric($vars['process'])) {
-		$process = ETL_Process::get_by_id($vars['process']);
+		$this->process = ETL_Process::get_by_id($vars['process']);
 	}
 	$debug = false;
 	if (isset($vars['debug']) ) {
@@ -93,10 +95,10 @@ class RunETLProcesses extends BuildTask {
 	}
 
 
-	if ($process) {
+	if ($this->process) {
 		if ($debug) {
-			echo "<h2>".$process->Title."</h2>";
-			$config = json_decode($process->Configuration, true);
+			echo "<h2>".$this->process->Title."</h2>";
+			$config = json_decode($this->process->Configuration, true);
 			echo "<pre>";
 			var_dump($config);
 			echo "</pre>";
@@ -124,7 +126,7 @@ class RunETLProcesses extends BuildTask {
 
 			$etl->extract($extractor, $source, $configuration);
 		} else {
-			$cerulean_query = "SELECT data FROM \"ETL_Record\" WHERE \"TypeID\" = " . $process->RecordTypeID;
+			$cerulean_query = "SELECT data FROM \"ETL_Record\" WHERE \"TypeID\" = " . $this->process->RecordTypeID;
 			$etl->extract('query', $cerulean_query, array('connection' => 'default'));
 			$etl->transform('callback', ['callback' => 'RunETLProcesses::denestJson']);
 		}
@@ -151,7 +153,7 @@ class RunETLProcesses extends BuildTask {
 			}
 			$etl->load($loader, $destination, $configuration);
 		} else {
-			$etl->transform('defaults', ['columns' => ['typename' => $process->RecordType()->Title], 'force' => true]);
+			$etl->transform('defaults', ['columns' => ['typename' => $this->process->RecordType()->Title], 'force' => true]);
 			$etl->transform('callback', ['callback' => 'RunETLProcesses::nestJson']);
 			$load_config = array();
 			$load_config['columns'] = array('legacyid', 'data', 'typename');
@@ -180,7 +182,7 @@ class RunETLProcesses extends BuildTask {
 			$etl->run();
 		}
 
-                $sync = DB::query('UPDATE "ETL_Record" SET "TypeID" = ' . $process->RecordTypeID . ' WHERE typename = \'' . $process->RecordType()->Title . '\'')->value();
+                $sync = DB::query('UPDATE "ETL_Record" SET "TypeID" = ' . $this->process->RecordTypeID . ' WHERE typename = \'' . $this->process->RecordType()->Title . '\'')->value();
 
 	} else {
 		echo "<h2>Process not found</h2>";
@@ -212,4 +214,11 @@ class RunETLProcesses extends BuildTask {
         }
     }
 
+    static function setRecordTypeColumns($row) {
+       $data = $row;
+       unset($data['data']);
+       $columns_string = implode(",", $data->toArray());
+       $this->process->RecordType()->RecordFields = $columns_string;
+       $this->process->RecordType()->write();
+    }
 }

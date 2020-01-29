@@ -93,6 +93,9 @@
         },
         {
           "$ref": "#/definitions/fileLoader"
+        },
+        {
+          "$ref": "#/definitions/postLoader"
         }
       ]
     },
@@ -892,6 +895,44 @@
                   "options" : {
                     "enum_titles" : ["overwrite", "append"]
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "postLoader": {
+      "title": "HTTP POST Loader",
+      "type" : "object",
+      "properties" : {
+        "post": {
+          "title" : "POSTs data to an HTTP endpoint",
+          "type": "object",
+          "required": ["destination", "config"],
+          "properties" : {
+            "destination" : {
+              "type" : "string",
+              "title" : "API Endpoint"
+            },
+            "config" : {
+              "type": "object",
+              "title": "Configuration",
+              "properties": {
+                "connection" : {
+                  "$ref" : "#/definitions/rests",
+                  "title": "RESTful connection to Use",
+                  "required": true
+                },
+                "columns": {
+                  "title": "Columns to load",
+                  "$ref": "#/definitions/fieldHeaders",
+                  "required": true
+                },
+                "commitSize": {
+                  "title" : "Number of records to group in a transaction",
+                  "type": "integer",
+                  "default" : 100
                 }
               }
             }
