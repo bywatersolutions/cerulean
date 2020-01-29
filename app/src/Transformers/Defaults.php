@@ -49,7 +49,12 @@ class Defaults extends Transformer
     {
 	foreach ($this->columns as $key => $value) {
 	    if ( !isset($row[$key]) || $this->force ) {
-                $row[$key] = $value;
+		// if the value is wrapped in {}, lookup that row if extant
+                if (preg_match('/^\{(?P<column>.+)\}$/', $value, $matches ) && isset($row[$matches['column']]) ) {
+                        $row[$key] = $row[$matches['column']];
+                } else {
+                        $row[$key] = $value;
+                }
             }
         }
     }
