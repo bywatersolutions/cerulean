@@ -6,6 +6,8 @@ use Marquine\Etl\Row;
 use Marquine\Etl\REST\Manager;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Psr7;
+use GuzzleHttp\Exception\RequestException;
 
 class POST extends Loader
 {
@@ -78,6 +80,9 @@ class POST extends Loader
      */
     public function initialize()
     {
+        if (! empty($this->columns) && array_keys($this->columns) === range(0, count($this->columns) - 1)) {
+            $this->columns = array_combine($this->columns, $this->columns);
+        }
     }
 
     /**
@@ -88,13 +93,30 @@ class POST extends Loader
      */
     public function load(Row $row)
     {
+        if ($this->columns) {
+            $result = [];
+
+            foreach ($this->columns as $key => $column) {
+                isset($row[$key]) ? $result[$column] = $row[$key] : $result[$column] = null;
+            }
+
+            $row = $result;
+        }
+
 	if ($this->transaction) {
 		// requires a bulk API
 	} else {
 		$client = $this->rest->getConnection($this->connection);
 		$payload = $this->config;
-		$payload['json'] = json_encode($row);
-		$response = $client->post($this->input, $payload);
+		$payload['json'] = $row;
+		try {
+			$response = $client->post($this->output, $payload);
+		} catch (RequestException $e) {
+			echo Psr7\str($e->getRequest());
+			if ($e->hasResponse()) {
+			        echo Psr7\str($e->getResponse());
+    			}
+		}
 	}
     }
 
@@ -108,3 +130,4 @@ class POST extends Loader
     }
 
 }
+
