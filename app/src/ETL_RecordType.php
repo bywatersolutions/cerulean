@@ -41,7 +41,7 @@ class ETL_RecordType extends DataObject {
 		$fields->addFieldToTab('Root.Main', CheckboxField::create('IsMap', 'Is This a Map?', $this->IsMap)->setDescription("Maps should have columns 'Key' and 'Value'"));
 
 		$fields->removeByName('Processes');
-		if ($tihs->ID) {
+		if ($this->ID) {
 			$etlprocesses = GridField::create('Processes', 'ETL Processes', $this->Processes());
 			$config = GridFieldConfig_RelationEditor::create();
 			$config->addComponent(new GridFieldOrderableRows());
