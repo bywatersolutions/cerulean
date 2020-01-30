@@ -2,6 +2,7 @@
 
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Forms\CheckboxField;
+use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldConfig_Base;
 use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;
@@ -40,18 +41,22 @@ class ETL_RecordType extends DataObject {
 		$fields->addFieldToTab('Root.Main', CheckboxField::create('IsMap', 'Is This a Map?', $this->IsMap)->setDescription("Maps should have columns 'Key' and 'Value'"));
 
 		$fields->removeByName('Processes');
-		$etlprocesses = GridField::create('Processes', 'ETL Processes', $this->Processes());
-		$config = GridFieldConfig_RelationEditor::create();
-		$config->addComponent(new GridFieldOrderableRows());
-		$config->removeComponentsByType(GridFieldAddExistingAutocompleter::class);
-		$etlprocesses->setConfig($config);
-		$fields->addFieldToTab('Root.Main',$etlprocesses);
+		if ($tihs->ID) {
+			$etlprocesses = GridField::create('Processes', 'ETL Processes', $this->Processes());
+			$config = GridFieldConfig_RelationEditor::create();
+			$config->addComponent(new GridFieldOrderableRows());
+			$config->removeComponentsByType(GridFieldAddExistingAutocompleter::class);
+			$etlprocesses->setConfig($config);
+			$fields->addFieldToTab('Root.Main',$etlprocesses);
 
-//		$fields->removeByName('RecordFields');
-		$records = GridField::create('Records', 'Records', $this->Records());
-		$config = GridFieldConfig_Base::create();
-		$records->setConfig($config);
-		$fields->addFieldToTab('Root.Records',$records);
+//			$fields->removeByName('RecordFields');
+			$records = GridField::create('Records', 'Records', $this->Records());
+			$config = GridFieldConfig_Base::create();
+			$records->setConfig($config);
+			$fields->addFieldToTab('Root.Records',$records);
+                } else {
+                        $fields->addFieldToTab('Root.Main', LiteralField::create('NotSaved', "<p class='message warning'>You can add Processes once you save for the first time</p>"));
+                }
 
 		return $fields;
 	}
