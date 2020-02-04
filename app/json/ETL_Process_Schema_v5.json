@@ -96,6 +96,9 @@
         },
         {
           "$ref": "#/definitions/postLoader"
+        },
+        {
+          "$ref": "#/definitions/putLoader"
         }
       ]
     },
@@ -933,6 +936,45 @@
                   "title" : "Number of records to group in a transaction",
                   "type": "integer",
                   "default" : 100
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "putLoader": {
+      "title": "HTTP PUT Loader",
+      "type" : "object",
+      "properties" : {
+        "post": {
+          "title" : "PUTs data to an HTTP endpoint",
+          "type": "object",
+          "required": ["destination", "config"],
+          "properties" : {
+            "destination" : {
+              "type" : "string",
+              "title" : "API Endpoint"
+            },
+            "config" : {
+              "type": "object",
+              "title": "Configuration",
+              "properties": {
+                "connection" : {
+                  "$ref" : "#/definitions/rests",
+                  "title": "RESTful connection to Use",
+                  "required": true
+                },
+                "columns": {
+                  "title": "Columns to load",
+                  "$ref": "#/definitions/fieldHeaders",
+                  "required": true
+                },
+                "key": {
+                  "title" : "Field containing record key",
+		  "description" : "This will be placed in the URL after the endpoint... only choose 1!",
+                  "$ref": "#/definitions/fieldHeaders",
+                  "required": true
                 }
               }
             }

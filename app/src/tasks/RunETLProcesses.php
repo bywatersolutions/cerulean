@@ -51,6 +51,7 @@ class RunETLProcesses extends BuildTask {
 	// Loaders
 	$container->bind('file_loader', Marquine\Etl\Loaders\File::class);
 	$container->bind('post_loader', Marquine\Etl\Loaders\POST::class);
+	$container->bind('put_loader', Marquine\Etl\Loaders\PUT::class);
 
 	// Bind Remote Databases
 	$databases = ETL_DB::get();
