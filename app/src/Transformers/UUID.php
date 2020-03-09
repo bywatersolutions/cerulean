@@ -27,7 +27,7 @@ class UUID extends Transformer
      *
      * @var string
      */
-    protected $uuid_namespace;
+    protected $uuidnamespace;
 
     /**
      * The UUID function to use, based on version
@@ -41,7 +41,7 @@ class UUID extends Transformer
      * @var array
      */
     protected $availableOptions = [
-        'columns', 'version', 'uuid_namespace'
+        'columns', 'version', 'uuidnamespace'
     ];
 
     /**
@@ -52,7 +52,8 @@ class UUID extends Transformer
     public function initialize()
     {
         $this->function = $this->getUUIDFunction();
-        $this->uuid_namespace = \Ramsey\Uuid\Uuid::uuid5(\Ramsey\Uuid\Uuid::NIL, $this->uuid_namespace);
+        $root_ns = \Ramsey\Uuid\Uuid::uuid5(\Ramsey\Uuid\Uuid::NAMESPACE_DNS, '');
+        $this->uuidnamespace = \Ramsey\Uuid\Uuid::uuid5($root_ns, $this->uuidnamespace);
     }
 
     /**
@@ -66,7 +67,7 @@ class UUID extends Transformer
         $row->transform($this->columns, function ($column) {
 	    $args = [$column];
 	    if ($this->version == 3 or $this->version == 5) {
-		$args = array_merge([$this->uuid_namespace], $args);
+		$args = array_merge([$this->uuidnamespace], $args);
 	    }
             $uuid = call_user_func_array($this->function, $args);
             return $uuid->toString();

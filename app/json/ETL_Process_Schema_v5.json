@@ -362,14 +362,14 @@
               "type": "object",
               "title": "Configuration",
               "properties" :{
-                "id_path" : {
+                "idpath" : {
                   "title" : "ID Path",
                   "description" : "The MARCspec path to the legacyid",
                   "type": "string",
                   "required": true,
                   "default": "001"
                 },
-                "holdings_tag" : {
+                "holdingstag" : {
                   "title" : "ID Path",
                   "description" : "The MARCspec path holding/item level data; if unspecified, only bib level data will be extracted",
                   "type": "string"
@@ -684,7 +684,7 @@
                     "enum_titles" : ["Version 1 - time-based", "Version 3 - MD5 hash of value in column", "Version 4 - Random", "Version 5 - SHA-1 hash of value in column"]
                   }
                 },
-                "uuid_namespace" : {
+                "uuidnamespace" : {
                   "type": "string",
                   "title": "Namespace UUID (for version 3 and 5)",
                   "description": "Provide a human-readable string here; the code will take care of turning it into a namespace UUID"

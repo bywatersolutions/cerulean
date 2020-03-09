@@ -23,14 +23,14 @@ class MARC extends Extractor
      *
      * @var string
      */
-    protected $id_path = '001';
+    protected $idpath = '001';
 
     /**
      * The MARC tag that is used to store holdings/item records
      *
      * @var string
      */
-    protected $holdings_tag = '999';
+    protected $holdingstag;
 
     /**
      * The separator to use when multiple values are returned in a column
@@ -52,7 +52,7 @@ class MARC extends Extractor
      * @var array
      */
     protected $availableOptions = [
-        'columns', 'id_path', 'holdings_tag', 'separator'
+        'columns', 'idpath', 'holdingstag', 'separator'
     ];
 
     /**
@@ -65,8 +65,8 @@ class MARC extends Extractor
 	$collection = new \File_MARC($this->input);
 	$counter = 1;
 	while ($record = $collection->next()) {
-		if ($this->holdings_tag) {
-			$items = $record->getFields($this->holdings_tag);
+		if ($this->holdingstag) {
+			$items = $record->getFields($this->holdingstag);
 		        $itemcount = 1;
 			foreach ($items as $item) {
 			    // if columns defined, then use, otherwise, fetch each subfield
@@ -109,7 +109,7 @@ class MARC extends Extractor
     }
 
     private function getLegacyID($record, $count) {
-	$reference = new \File_MARC_Reference($this->id_path,$record);
+	$reference = new \File_MARC_Reference($this->idpath,$record);
         $legacyid = implode($this->separator, $reference->content);
         if (!$legacyid) {
             $legacyid = $this->input . ":" . $count;
