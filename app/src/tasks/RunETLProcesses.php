@@ -178,7 +178,7 @@ class RunETLProcesses extends BuildTask {
 			echo "<h2>Results</h2>";
 			echo "<pre>";
 			var_dump($etl->toArray());
-			echo "</pre>";
+			echo "</pre>\n";
 		} else {
 			$etl->run();
 		}
@@ -186,7 +186,7 @@ class RunETLProcesses extends BuildTask {
                 $sync = DB::query('UPDATE "ETL_Record" SET "TypeID" = ' . $this->process->RecordTypeID . ' WHERE typename = \'' . $this->process->RecordType()->Title . '\'')->value();
 
 	} else {
-		echo "<h2>Process not found</h2>";
+		echo "<h2>Process not found</h2>\n";
 	}
     }
 
