@@ -91,17 +91,22 @@ class PUT extends Loader
 
             foreach ($this->columns as $key => $column) {
                 if (isset($row[$key]) ) {
-		   $result = $row[$key];
+                   if($row[$key] == 'true') {
+                      $results[$column] = true;
+                   } elseif ($row[$key] == 'false') {
+		      $results[$column] = false;
+                   } else {
+		      $result = $row[$key];
+                   }
 		} else {
 		   $result[$column] = null;
 		}
             }
-$interim = array();
-foreach($result as $path => $value) {
-  $ancestors = explode('.', $path);
-  $this->set_nested_value($interim, $ancestors, $value);
-}
-
+            $interim = array();
+            foreach($result as $path => $value) {
+              $ancestors = explode('.', $path);
+              $this->set_nested_value($interim, $ancestors, $value);
+            }
 
             $row = $interim;
         }
@@ -112,8 +117,9 @@ foreach($result as $path => $value) {
 		$client = $this->rest->getConnection($this->connection);
 		$payload = $this->config;
 		$payload['json'] = $row;
+		$payload['headers']['Accept'] = 'text/plain';
 		try {
-			$response = $client->put($this->output . "/" . $row[$this->key], $payload);
+			$response = $client->put($this->output . "/" . $row[$this->key[0]], $payload);
 		} catch (RequestException $e) {
 			if ($e->hasResponse()) {
 			        echo Psr7\str($e->getResponse());
@@ -146,27 +152,27 @@ foreach($result as $path => $value) {
       return $backup;
    }
 
-/**
- * Give it and array, and an array of parents, it will decent into the
- * nested arrays and set the value.
- */
-function set_nested_value(array &$arr, array $ancestors, $value) {
-  $current = &$arr;
-  foreach ($ancestors as $key) {
+   /**
+    * Give it and array, and an array of parents, it will decent into the
+    * nested arrays and set the value.
+    */
+    function set_nested_value(array &$arr, array $ancestors, $value) {
+      $current = &$arr;
+      foreach ($ancestors as $key) {
 
-    // To handle the original input, if an item is not an array, 
-    // replace it with an array with the value as the first item.
-    if (!is_array($current)) {
-      $current = array( $current);
+        // To handle the original input, if an item is not an array, 
+        // replace it with an array with the value as the first item.
+        if (!is_array($current)) {
+          $current = array( $current);
+        }
+
+        if (!array_key_exists($key, $current)) {
+          $current[$key] = array();
+        }
+        $current = &$current[$key];
+      }
+
+      $current = $value;
     }
-
-    if (!array_key_exists($key, $current)) {
-      $current[$key] = array();
-    }
-    $current = &$current[$key];
-  }
-
-  $current = $value;
-}
 }
 
