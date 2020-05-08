@@ -947,7 +947,7 @@
       "title": "HTTP PUT Loader",
       "type" : "object",
       "properties" : {
-        "post": {
+        "put": {
           "title" : "PUTs data to an HTTP endpoint",
           "type": "object",
           "required": ["destination", "config"],
@@ -1035,6 +1035,7 @@
     "fieldHeaders" : {
       "title": "Field Headers",
       "type": "array",
+      "format": "checkbox",
       "uniqueItems": true,
       "items": {
         "type": "string",

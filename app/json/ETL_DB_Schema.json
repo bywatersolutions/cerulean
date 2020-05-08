@@ -3,7 +3,7 @@
   "description" : "Configuration for an PHP-ETL Database",
   "type" : "object",
   "options": {
-    "disable_properties": false,
+    "disable_properties": true,
     "disable_edit_json": false
   },
   "properties" : {
@@ -12,6 +12,9 @@
       "type" : "object",
       "required": true,
       "defaultProperties" : ["driver", "host", "port", "database", "username", "password"],
+      "options" : {
+         "disable_properties": false
+      },
       "properties": {
          "driver" : {
             "title": "Driver",
