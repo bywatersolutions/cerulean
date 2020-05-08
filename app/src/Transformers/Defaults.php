@@ -48,13 +48,16 @@ class Defaults extends Transformer
     public function transform(Row $row)
     {
 	foreach ($this->columns as $key => $value) {
-	    if ( !isset($row[$key]) || $this->force ) {
+	    if ( !isset($row[$key]) || is_null($row[$key]) || $row[$key] == '' || $this->force ) {
 		// if the value is wrapped in {}, lookup that row if extant
-                if (preg_match('/^\{(?P<column>.+)\}$/', $value, $matches ) && isset($row[$matches['column']]) ) {
-                        $row[$key] = $row[$matches['column']];
-                } else {
-                        $row[$key] = $value;
+                if (preg_match_all('/\{(?P<column>[^\}]+)\}/', $value, $matches) ( {
+                   foreach($matches['column'] as $column) {
+                        if (isset($row[$column]) ) {
+                           $value = preg_replace('/\{'.$column.'\}/', $row[$column], $value);
+                        }
+                   }
                 }
+                $row[$key] = $value;
             }
         }
     }
