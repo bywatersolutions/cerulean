@@ -73,14 +73,18 @@ class MARC extends Extractor
 			    $this->row['biblio_id'] = $this->getLegacyID($record, $counter);
 			    if ($this->columns) {
 			        foreach ($this->columns as $name => $tag) {
-				    $this->row[$name] = implode($this->separator, $item->getSubFields($tag));
+                                    $goal = implode($this->separator, $item->getSubFields($tag));
+				    $goal = substr($goal, 5);
+                                    if ($goal) {
+					$this->row[$name] = $goal;
+                                    }
 			        }
                             } else {
                                 foreach ($item->getSubFields() as $subfield) {
-				     $this->row[$subfield->getTag()] = $subfield->getData();
+				     $this->row[$subfield->getCode()] = $subfield->getData();
 				}
                             }
-			    if ($this->row['barcode']) {
+			    if (isset($this->row['barcode'])) {
 				$this->row['legacyid'] = $this->row['barcode'];
 			    } else {
 				$this->row['legacyid'] = $this->row['biblio_id'] . ":" . $itemcount;
@@ -90,7 +94,7 @@ class MARC extends Extractor
 			}
 		} else {
 		    $this->row['legacyid'] = $this->getLegacyID($record, $counter);
-	  	    $this->row['record'] = json_decode($record->toJSON());
+	  	    $this->row['record'] = $record->toRaw();
  		    foreach ($this->columns as $key => $path) {
 			$results = '';
 	                if ($path) {
