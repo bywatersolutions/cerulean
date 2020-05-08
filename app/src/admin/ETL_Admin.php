@@ -145,7 +145,7 @@ class GridFieldRunProcessAction implements GridField_ColumnProvider, GridField_A
 **/
 
 	$field = new LiteralField("RunProcess",
-		"<button class='btn btn-primary ws-action font-icon-rocket' id='process" . $record->ID . "'>Run Process</button>".
+		"<button class='btn btn-primary ws-action font-icon-rocket' id='process" . $record->ID . "' href='/dev/tasks/RunETLProcesses?debug=1&process=" . $record->ID . "' target='_new'>Run Process</button>".
 		"<div id='process" . $record->ID . "results'></div>"
 	);
         return $field->Field();
