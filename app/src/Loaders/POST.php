@@ -99,11 +99,11 @@ class POST extends Loader
             foreach ($this->columns as $key => $column) {
                 if (isset($row[$key]) ) {
                    if($row[$key] == 'true') {
-                      $results[$column] = true;
+                      $result[$column] = true;
                    } elseif ($row[$key] == 'false') {
-                      $results[$column] = false;
+                      $result[$column] = false;
                    } else {
-                      $result = $row[$key];
+                      $result[$column] = $row[$key];
                    }
                 } else {
                    $result[$column] = null;
