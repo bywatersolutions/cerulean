@@ -165,12 +165,16 @@ class RunETLProcesses extends BuildTask {
 		}
 
 		// Limit rows, if configured
-		if (isset($config['limit'])) {
+		if (isset($vars['limit']) and is_numeric($vars['limit'])) {
+			$etl->limit($vars['limit']);
+		} elseif (isset($config['limit'])) {
 			$etl->limit($config['limit']);
 		}
 
 		// Skip rows, if configured
-		if (isset($config['skip'])) {
+		if (isset($vars['skip']) and is_numeric($vars['skip'])) {
+			$etl->skip($vars['skip']);
+		} elseif (isset($config['skip'])) {
 			$etl->skip($config['skip']);
 		}
 
