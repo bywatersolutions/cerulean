@@ -49,7 +49,7 @@ Cerulean extends PHP-ETL to support not only SQL databases, but also RESTful web
 Extract data from a MARC record, either at the biblio or item level (if you provide a tag number)
 
 ## SimpleXML Extractor ##
-An alternate XML Extractor implementation.  Provides full XPath querying, at the cost of loading the entire XML file into memory.
+An alternate XML Extractor implementation.  Provides full XPath querying, at the cost of loading the entire XML file into memory
 
 ## GET Extractor ##
 Fetch data from a RESTful endpoint.
@@ -59,6 +59,7 @@ Fetch data from a RESTful endpoint.
 - **Callback**: run a PHP function against an entire Row (may be replaced by a PHP-ETL native Transformer)
 - **Date**: reformat a Date-like string into another Date-like string
 - **Defaults**: provide default values for columns
+- **FaaS**: transform data with a RESTful Function-as-a-Service *not yet implemented*
 - **Filter**:  *not yet implemented*
 - **Map**: map a value into another, using a provided map
 - **Math**: do algebra on a column's value
@@ -71,10 +72,10 @@ Fetch data from a RESTful endpoint.
 Save the data to a file (or STDOUT), in CSV, JSON or YAML format
 
 ## POST Loader ##
-Send data to a RESTful endpoint as JSON.
+Send data to a RESTful endpoint as JSON
 
 ## PUT Loader ##
-*coming soon*
+Send updated data (again, as JSON) to a RESTful endpoint / ID value
 
 # Installation
 
