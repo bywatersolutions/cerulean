@@ -57,7 +57,7 @@ class File extends Loader
         fputcsv($filepointer, array_merge($this->columns, $row));
         break;
             case 'json':
-        fwrite($filepointer, json_encode($row, JSON_PRETTY_PRINT) . ",\n");
+        fwrite($filepointer, json_encode($row) . "\n");
         break;
         case 'yaml':
         case 'yml':
