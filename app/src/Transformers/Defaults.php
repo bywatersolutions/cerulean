@@ -47,9 +47,9 @@ class Defaults extends Transformer
      */
     public function transform(Row $row)
     {
-	foreach ($this->columns as $key => $value) {
-	    if ( !isset($row[$key]) || is_null($row[$key]) || $row[$key] == '' || $this->force ) {
-		// if the value is wrapped in {}, lookup that row if extant
+        foreach ($this->columns as $key => $value) {
+            if ( !isset($row[$key]) || is_null($row[$key]) || $row[$key] == '' || $this->force ) {
+                // if the value is wrapped in {}, lookup that row if extant
                 if (preg_match_all('/\{(?P<column>[^\}]+)\}/', $value, $matches) ) {
                    foreach($matches['column'] as $column) {
                         if (isset($row[$column]) ) {
