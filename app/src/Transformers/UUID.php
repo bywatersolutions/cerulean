@@ -30,6 +30,13 @@ class UUID extends Transformer
     protected $uuidnamespace;
 
     /**
+     * The root namespace to use to generate v3 and v5 UUIDs.
+     *
+     * @var string
+     */
+    protected $rootnamespace;
+
+    /**
      * The UUID function to use, based on version
      *
      */
@@ -41,7 +48,7 @@ class UUID extends Transformer
      * @var array
      */
     protected $availableOptions = [
-        'columns', 'version', 'uuidnamespace'
+        'columns', 'version', 'uuidnamespace', 'rootnamespace'
     ];
 
     /**
@@ -52,7 +59,7 @@ class UUID extends Transformer
     public function initialize()
     {
         $this->function = $this->getUUIDFunction();
-        $root_ns = \Ramsey\Uuid\Uuid::uuid5(\Ramsey\Uuid\Uuid::NAMESPACE_DNS, '');
+        $root_ns = \Ramsey\Uuid\Uuid::uuid5(\Ramsey\Uuid\Uuid::NAMESPACE_DNS, $this->rootnamespace);
         $this->uuidnamespace = \Ramsey\Uuid\Uuid::uuid5($root_ns, $this->uuidnamespace);
     }
 

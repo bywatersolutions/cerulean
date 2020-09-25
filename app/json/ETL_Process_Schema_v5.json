@@ -688,6 +688,11 @@
                   "type": "string",
                   "title": "Namespace UUID (for version 3 and 5)",
                   "description": "Provide a human-readable string here; the code will take care of turning it into a namespace UUID"
+                },
+                "rootnamespace" : {
+                  "type": "string",
+                  "title": "Root Namespace UUID (for version 3 and 5)",
+                  "description": "Provide a human-readable string here; the code will take care of turning it into a namespace UUID"
                 }
               }
             }
