@@ -54,6 +54,10 @@ class Defaults extends Transformer
                    foreach($matches['column'] as $column) {
                         if (isset($row[$column]) ) {
                            $value = preg_replace('/\{'.$column.'\}/', $row[$column], $value);
+                        } elseif (substr($column, 0, 3) == 'now') {
+			   // cut off the 'now', make a datetime and output in 'c' format
+			   $dt = new \DateTime(substr($column,3));
+                           $value = $dt->format('c');
                         }
                    }
                 }
