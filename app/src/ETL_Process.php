@@ -74,9 +74,13 @@ class ETL_Process extends DataObject {
 
 		// Enumerate Files
 		$source_folder = File::get()->filter(array('Title' => $this->config()->get('file_source_folder')))->first();
-		$files = $source_folder->mychildren()->map('FileFilename', 'Title')->toArray();
-		$file_titles = array_values($files);
-		$file_paths= array_keys($files);
+		$files = $source_folder->mychildren();
+		$file_titles = array();
+		$file_paths= array();
+		foreach ($files as $file) {
+			$file_titles[] = $file->Title;
+			$file_paths[] = $file->getSourceURL();
+		}
 
 		// enumerating File IDs; will be processed by RunETLProcesses task
 		$schema_array->{'definitions'}->{'sourceFiles'}->{'enum'} = $file_paths;
