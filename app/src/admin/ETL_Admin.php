@@ -11,6 +11,7 @@ use SilverStripe\Forms\LiteralField;
 use SilverStripe\Control\Controller;
 use SilverStripe\View\Requirements;
 
+use SwiftDevLabs\DuplicateDataObject\Forms\GridField\GridFieldDuplicateAction;
 
 class Extract_Admin extends ModelAdmin {
 	private static $managed_models = ['E_Process'];
@@ -29,6 +30,7 @@ class Extract_Admin extends ModelAdmin {
 		$form = parent::getEditForm($id, $fields);
 		$gridField = $form->Fields()->fieldByName($this->sanitiseClassName($this->modelClass));
 		$gridField->getConfig()->addComponent(new GridFieldRunProcessAction());
+		$gridField->getConfig()->addComponent(new GridFieldDuplicateAction());
 		return $form;
 	}
 }
@@ -62,6 +64,7 @@ class Transform_Admin extends ModelAdmin {
 		$form = parent::getEditForm($id, $fields);
 		$gridField = $form->Fields()->fieldByName($this->sanitiseClassName($this->modelClass));
 		$gridField->getConfig()->addComponent(new GridFieldRunProcessAction());
+		$gridField->getConfig()->addComponent(new GridFieldDuplicateAction());
 		return $form;
 	}
 
@@ -84,6 +87,7 @@ class Load_Admin extends ModelAdmin {
 		$form = parent::getEditForm($id, $fields);
 		$gridField = $form->Fields()->fieldByName($this->sanitiseClassName($this->modelClass));
 		$gridField->getConfig()->addComponent(new GridFieldRunProcessAction());
+		$gridField->getConfig()->addComponent(new GridFieldDuplicateAction());
 		return $form;
 	}
 
@@ -100,6 +104,12 @@ class ETL_DB_Admin extends ModelAdmin {
     private static $menu_title = 'Remote Connections';
 
     private static $menu_priority = 1;
+	public function getEditForm($id = null, $fields = null) {
+		$form = parent::getEditForm($id, $fields);
+		$gridField = $form->Fields()->fieldByName($this->sanitiseClassName($this->modelClass));
+		$gridField->getConfig()->addComponent(new GridFieldDuplicateAction());
+		return $form;
+	}
 }
 
 class GridFieldRunProcessAction implements GridField_ColumnProvider, GridField_ActionProvider 
@@ -145,7 +155,7 @@ class GridFieldRunProcessAction implements GridField_ColumnProvider, GridField_A
 **/
 
 	$field = new LiteralField("RunProcess",
-		"<button class='btn btn-primary ws-action font-icon-rocket' id='process" . $record->ID . "' href='/dev/tasks/RunETLProcesses?debug=1&process=" . $record->ID . "' target='_new'>Run Process</button>".
+		"<button class='btn btn-primary ws-action font-icon-rocket' id='process" . $record->ID . "'>Run Process</button>".
 		"<div id='process" . $record->ID . "results'></div>"
 	);
         return $field->Field();

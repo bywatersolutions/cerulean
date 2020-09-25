@@ -16,7 +16,8 @@
         "symbiote/silverstripe-gridfieldextensions": "^3.2",
         "scriptotek/marc": "dev-master",
         "guzzlehttp/guzzle": "^6.5",
-        "ramsey/uuid": "^3.9"
+        "ramsey/uuid": "^3.9",
+        "jinjie/ss4-duplicate-dataobject": "^1.1"
     },
     "authors": [
         {
@@ -28,6 +29,7 @@
         "project-files-installed": [
             "app/.htaccess",
             "app/_config.php",
+            "app/_config/mimevalidator.yml",
             "app/_config/mysite.yml"
         ],
         "public-files-installed": [
@@ -37,4 +39,3 @@
         ]
     }
 }
-
