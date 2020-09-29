@@ -82,7 +82,10 @@ class GET extends Extractor
 		   $jsonPath = new JSONPath($data);
 	           foreach ($this->columns as $key => $path) {
                 	if ($path) {
-				$row[$key] = $jsonPath->find($path)->data()[0];
+				$value = $jsonPath->find($path);
+				if (isset($value->data()[0])) {
+					$row[$key] = $value->data()[0];
+				}
                 	}
 		   }
 		   $row['record'] = $data;
