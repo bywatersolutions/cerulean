@@ -79,7 +79,12 @@ class ETL_Process extends DataObject {
 		$file_paths= array();
 		foreach ($files as $file) {
 			$file_titles[] = $file->Title;
-			$file_paths[] = $file->getSourceURL();
+			$path = $file->getSourceURL();
+			if ($file->getVisibility() == 'protected') {
+				preg_match("/^(\/assets\/)(.+)$/", $path, $parts);
+				$path = $parts[1] . ".protected/" . $parts[2];
+			}
+			$file_paths[] = $path;
 		}
 
 		// enumerating File IDs; will be processed by RunETLProcesses task
