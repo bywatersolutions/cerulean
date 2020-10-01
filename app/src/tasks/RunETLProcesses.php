@@ -21,6 +21,11 @@ use Marquine\Etl\Container;
 
 use GuzzleHttp\Client;
 
+foreach (glob("./app/src/tasks/finalizers/*.php") as $filename)
+{
+    include $filename;
+}
+
 class RunETLProcesses extends BuildTask {
 
     protected $title = 'Run ETL Process';
@@ -111,7 +116,7 @@ class RunETLProcesses extends BuildTask {
 
 			//  if 'source' is set, it's a file; set relative to full assets path
 			if (isset($config['Extractor'][$extractor]['source'])) {
-				$source = $_SERVER['DOCUMENT_ROOT'] . "/public/assets/" . $config['Extractor'][$extractor]['source'];
+				$source =  "./public" . $config['Extractor'][$extractor]['source'];
 			// if 'query' is set, it's a DB Query
 			} elseif (isset($config['Extractor'][$extractor]['query'])) {
 				$source = $config['Extractor'][$extractor]['query'];
@@ -146,13 +151,24 @@ class RunETLProcesses extends BuildTask {
 
 		// Set up Loader, or use Cerulean Record storage
 		if (isset($config['Loader'])) {
-			$loader = array_keys($config['Loader'])[0];
-			$destination = $config['Loader'][$loader]['destination'];
-			$configuration = $config['Loader'][$loader]['config'];
-			if ( isset($configuration['columns'][0]) && isset($configuration['columns'][0]['key']) ) {
-				$configuration = $this->fixColumns($configuration);
+			// Check for a defined 'finalizer' function for this record type
+                        $record_type = $this->process->RecordType()->Title;
+                        $finalize_function =  'finalize'. str_replace(' ', '', $record_type);
+                        if (function_exists($finalize_function)) {
+                                $etl->transform('callback', ['callback' => $finalize_function]);
+                        } else {
+                                print "No finalizer for $record_type defined\n";
+                        }
+			// Now process individual loaders
+			foreach ($config['Loader'] as $loader) {
+				$loader_type = array_keys($loader)[0];
+				$destination = $loader[$loader_type]['destination'];
+				$configuration = $loader[$loader_type]['config'];
+				if ( isset($configuration['columns'][0]) && isset($configuration['columns'][0]['key']) ) {
+					$configuration = $this->fixColumns($configuration);
+				}
+				$etl->load($loader_type, $destination, $configuration);
 			}
-			$etl->load($loader, $destination, $configuration);
 		} else {
 			$etl->transform('defaults', ['columns' => ['typename' => $this->process->RecordType()->Title], 'force' => true]);
 			$etl->transform('callback', ['callback' => 'RunETLProcesses::nestJson']);
@@ -226,4 +242,5 @@ class RunETLProcesses extends BuildTask {
        $this->process->RecordType()->RecordFields = $columns_string;
        $this->process->RecordType()->write();
     }
+
 }

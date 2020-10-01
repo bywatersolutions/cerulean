@@ -81,26 +81,30 @@
       }
     },
     "Loader": {
-      "type": "object",
+      "type": "array",
       "required": true,
-      "description": "Load records into a source",
-      "oneOf" : [
-        {
-          "$ref": "#/definitions/insertLoader"
-        },
-        {
-          "$ref": "#/definitions/insertUpdateLoader"
-        },
-        {
-          "$ref": "#/definitions/fileLoader"
-        },
-        {
-          "$ref": "#/definitions/postLoader"
-        },
-        {
-          "$ref": "#/definitions/putLoader"
-        }
-      ]
+      "description": "ordered list of Loaders",
+      "items": {
+         "type": "object",
+	 "title": "Loader",
+         "oneOf" : [
+           {
+             "$ref": "#/definitions/insertLoader"
+           },
+           {
+             "$ref": "#/definitions/insertUpdateLoader"
+           },
+           {
+             "$ref": "#/definitions/fileLoader"
+           },
+           {
+            "$ref": "#/definitions/postLoader"
+           },
+           {
+             "$ref": "#/definitions/putLoader"
+           }
+         ]
+      }
     },
     "limit": {
       "title": "Limit",
