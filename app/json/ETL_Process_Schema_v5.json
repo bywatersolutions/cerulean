@@ -48,6 +48,9 @@
         "title": "Transformer",
         "oneOf": [
           {
+            "$ref": "#/definitions/defaultsTransformer"
+          },
+          {
             "$ref": "#/definitions/dateTransformer"
           },
           {
@@ -72,9 +75,6 @@
             "$ref": "#/definitions/renameColumnsTransformer"
           },
           {
-            "$ref": "#/definitions/defaultsTransformer"
-          },
-          {
             "$ref": "#/definitions/mapTransformer"
           }
         ]
@@ -89,19 +89,25 @@
 	 "title": "Loader",
          "oneOf" : [
            {
+             "$ref": "#/definitions/fileLoader"
+           },
+           {
              "$ref": "#/definitions/insertLoader"
            },
            {
              "$ref": "#/definitions/insertUpdateLoader"
            },
            {
-             "$ref": "#/definitions/fileLoader"
-           },
-           {
             "$ref": "#/definitions/postLoader"
            },
            {
              "$ref": "#/definitions/putLoader"
+           },
+           {
+             "$ref": "#/definitions/patchLoader"
+           },
+           {
+             "$ref": "#/definitions/deleteLoader"
            }
          ]
       }
@@ -977,6 +983,84 @@
                 "columns": {
                   "title": "Columns to load",
                   "$ref": "#/definitions/fieldHeaders",
+                  "required": true
+                },
+                "key": {
+                  "title" : "Field containing record key",
+		  "description" : "This will be placed in the URL after the endpoint... only choose 1!",
+                  "$ref": "#/definitions/fieldHeaders",
+                  "required": true
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "patchLoader": {
+      "title": "HTTP PATCH Loader",
+      "type" : "object",
+      "properties" : {
+        "patch": {
+          "title" : "PATCHes data to an HTTP endpoint",
+          "type": "object",
+          "required": ["destination", "config"],
+          "properties" : {
+            "destination" : {
+              "type" : "string",
+              "title" : "API Endpoint"
+            },
+            "config" : {
+              "type": "object",
+              "title": "Configuration",
+              "properties": {
+                "connection" : {
+                  "$ref" : "#/definitions/rests",
+                  "title": "RESTful connection to Use",
+                  "required": true
+                },
+                "columns": {
+                  "title": "Columns to load",
+                  "$ref": "#/definitions/fieldHeaders",
+                  "required": true
+                },
+                "key": {
+                  "title" : "Field containing record key",
+		  "description" : "This will be placed in the URL after the endpoint... only choose 1!",
+                  "$ref": "#/definitions/fieldHeaders",
+                  "required": true
+                },
+                "fallback": {
+                  "title": "Fallback HTTP method",
+                  "description": "Use GET + merge + PUT instead of PATCH verb?",
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "deleteLoader": {
+      "title": "HTTP DELETE Loader",
+      "type" : "object",
+      "properties" : {
+        "delete": {
+          "title" : "DELETEs data from an HTTP endpoint",
+          "type": "object",
+          "required": ["destination", "config"],
+          "properties" : {
+            "destination" : {
+              "type" : "string",
+              "title" : "API Endpoint"
+            },
+            "config" : {
+              "type": "object",
+              "title": "Configuration",
+              "properties": {
+                "connection" : {
+                  "$ref" : "#/definitions/rests",
+                  "title": "RESTful connection to Use",
                   "required": true
                 },
                 "key": {

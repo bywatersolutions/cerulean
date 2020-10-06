@@ -59,7 +59,7 @@ Fetch data from a RESTful endpoint.
 - **Callback**: run a PHP function against an entire Row (may be replaced by a PHP-ETL native Transformer)
 - **Date**: reformat a Date-like string into another Date-like string
 - **Defaults**: provide default values for columns
-- **FaaS**: transform data with a RESTful Function-as-a-Service *not yet implemented*
+- **FaaS**: transform data with a RESTful Function-as-a-Service. Run synchronously. *not yet implemented*
 - **Filter**:  *not yet implemented*
 - **Map**: map a value into another, using a provided map
 - **Math**: do algebra on a column's value
@@ -75,7 +75,13 @@ Save the data to a file (or STDOUT), in CSV, JSON or YAML format
 Send data to a RESTful endpoint as JSON
 
 ## PUT Loader ##
-Send updated data (again, as JSON) to a RESTful endpoint / ID value
+Send replacement data (again, as JSON) to a RESTful endpoint / ID value
+
+## PATCH Loader ##
+Send updated data (again, as JSON) to a RESTful endpoint / ID value.  Uses PATCH by default, but can be configured to fallback to GET + array_replace_recursvie + PUT for APIs where PATCH isn't implemented
+
+## DELETE Loader ##
+Ok, so not actually a "loader", but it helps fill out the set of HTTP verbs.  Sends a DELETE request to a RESTful endpoint / ID value
 
 # Installation
 

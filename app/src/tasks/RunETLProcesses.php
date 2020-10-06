@@ -57,6 +57,8 @@ class RunETLProcesses extends BuildTask {
 	$container->bind('file_loader', Marquine\Etl\Loaders\File::class);
 	$container->bind('post_loader', Marquine\Etl\Loaders\POST::class);
 	$container->bind('put_loader', Marquine\Etl\Loaders\PUT::class);
+	$container->bind('patch_loader', Marquine\Etl\Loaders\PATCH::class);
+	$container->bind('delete_loader', Marquine\Etl\Loaders\DELETE::class);
 
 	// Bind Remote Databases
 	$databases = ETL_DB::get();
@@ -145,6 +147,9 @@ class RunETLProcesses extends BuildTask {
 				if ( isset($configuration['columns'][0]) && isset($configuration['columns'][0]['key']) ) {
 					$configuration = $this->fixColumns($transformer[$transformer_type]['config']);
 				}
+                                if ($transformer_type == 'map') {
+                                        $configuration['map'] = $this->getMap($configuration['map']);
+                                }
 				$etl->transform($transformer_type, $configuration);
 			}
 		}
@@ -241,6 +246,16 @@ class RunETLProcesses extends BuildTask {
        $columns_string = implode(",", $data->toArray());
        $this->process->RecordType()->RecordFields = $columns_string;
        $this->process->RecordType()->write();
+    }
+
+    public function getMap($id) {
+        $mappings = ETL_Record::get()->filter(array("TypeID" => $id));
+        $result = array();
+        foreach ($mappings as $mapping) {
+                $data = json_decode($mapping->data, true);
+                $result[$data['Key']] = $data['Value'];
+        }
+        return $result;
     }
 
 }
