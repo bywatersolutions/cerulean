@@ -7,7 +7,7 @@ use Psr\Log\LoggerInterface;
 class FileConversionExtension extends DataExtension {
 
 	public function onAfterUpload() {
-		Injector::inst()->get(LoggerInterface::class)->info($this->owner->getFileType() . " was uploaded");
+		Injector::inst()->get(LoggerInterface::class)->info($this->owner->getFileType() . " '" . $this->owner->Title . "' was uploaded");
 	}
 
 }
