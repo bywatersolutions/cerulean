@@ -34,6 +34,9 @@
               "$ref": "#/definitions/authHeader"
             },
             {
+              "$ref": "#/definitions/apiKeyParam"
+            },
+            {
               "$ref": "#/definitions/fetchToken"
             }
           ]
@@ -85,6 +88,22 @@
           "type" : "string",
           "title": "Value to place in HTTP Authorization Header",
           "description" : "Include prefixes like 'Bearer'",
+          "required" : true
+        }
+      }
+    },
+    "apiKeyParam" : {
+      "type" : "object",
+      "title": "API Key in a URL Parameter",
+      "properties": {
+        "param" : {
+          "type" : "string",
+          "title": "Name of the parameter for the API Key",
+          "required" : true
+        },
+        "token" : {
+          "type" : "string",
+          "title": "API Key itself",
           "required" : true
         }
       }

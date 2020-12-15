@@ -77,6 +77,9 @@ class Manager
                         $token = $auth_request->getHeader($rest_config['authentication']['header'])[0];
                         // plunk it into the set header
                         $rest_config['headers'][$rest_config['authentication']['header']] = $token;
+                } elseif (isset($rest_config['authentication']['param'])) {
+                        // insert token into API Key query param
+			$rest_config['query'] = array($rest_config['authentication']['param'] => $rest_config['authentication']['token']);
                 } elseif (isset($rest_config['authentication']['token'])) {
                         // insert token into Authentication header
                 } elseif (isset($rest_config['authentication']['username']) && isset($rest_config['authentication']['password']) ) {
